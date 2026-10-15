@@ -75,15 +75,15 @@ export default function IndiaMap({ points, selected, onSelect, hover, setHover, 
     <>
       <ambientLight intensity={dark ? 0.5 : 0.9} />
       <directionalLight position={[10, 30, 20]} intensity={dark ? 1.4 : 1.8} />
-      <pointLight position={[-10, 8, 6]} intensity={80} color="#5B8DFF" distance={40} />
+      <pointLight position={[-10, 8, 6]} intensity={80} color="#8AA6CF" distance={40} />
       <mesh geometry={geom} position={[0, -0.6, 0]} onPointerDown={() => onSelect(null)}>
-        <meshStandardMaterial color={dark ? '#161A20' : '#FFFFFF'} metalness={0.3} roughness={0.6} />
+        <meshStandardMaterial color={dark ? '#222326' : '#FFFFFF'} metalness={0.3} roughness={0.6} />
       </mesh>
       <lineSegments geometry={edges} position={[0, -0.6, 0]}>
-        <lineBasicMaterial color={dark ? '#5B8DFF' : '#9AA0A8'} transparent opacity={dark ? 0.55 : 0.8} />
+        <lineBasicMaterial color={dark ? '#8AA6CF' : '#A8A298'} transparent opacity={dark ? 0.55 : 0.8} />
       </lineSegments>
-      <gridHelper args={[80, 80, dark ? '#1B1F24' : '#DAD6CC', dark ? '#121418' : '#E6E3DC']} position={[0, -0.62, 0]} />
-      {!calm && dark && <Sparkles count={60} scale={[34, 6, 34]} size={2} speed={0.25} opacity={0.35} color="#8A9099" />}
+      <gridHelper args={[80, 80, dark ? '#27282B' : '#E3E1DE', dark ? '#1B1C1E' : '#EFEFED']} position={[0, -0.62, 0]} />
+      {!calm && dark && <Sparkles count={60} scale={[34, 6, 34]} size={2} speed={0.25} opacity={0.35} color="#8A857C" />}
       {points.map((p) => (
         <Pillar key={p.id} p={p} selected={selected === p.id} hover={hover === p.id} onSelect={onSelect} setHover={setHover} calm={calm} />
       ))}
@@ -93,7 +93,7 @@ export default function IndiaMap({ points, selected, onSelect, hover, setHover, 
           <group key={h.name}>
             <mesh position={[hx, 0.06, hz]}>
               <octahedronGeometry args={[0.28]} />
-              <meshStandardMaterial color="#C9CDD3" emissive="#C9CDD3" emissiveIntensity={0.6} />
+              <meshStandardMaterial color="#CFCCC7" emissive="#CFCCC7" emissiveIntensity={0.6} />
             </mesh>
             {points
               .filter((p) => Math.hypot(p.lng - h.lng, p.lat - h.lat) < 9)

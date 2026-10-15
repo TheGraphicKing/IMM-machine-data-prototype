@@ -13,20 +13,20 @@ export function useThemeHex() {
   const dark = theme === 'dark';
   return {
     dark,
-    run: dark ? '#34C77B' : '#1E9E57',
-    idle: dark ? '#FFC233' : '#E5B000',
-    mould: dark ? '#5B8DFF' : '#2F6FEB',
-    down: dark ? '#FF5A47' : '#D8382B',
-    off: dark ? '#4A4F57' : '#9AA0A8',
-    fg: dark ? '#FFFFFF' : '#15171A',
-    fg2: dark ? '#C9CDD3' : '#4A4F57',
-    fg3: dark ? '#8A9099' : '#6B7079',
-    fg4: dark ? '#6A7079' : '#9AA0A8',
-    line: dark ? '#2A2F36' : '#E3E1DB',
-    panel: dark ? '#15181C' : '#FFFFFF',
-    panel2: dark ? '#1B1F24' : '#FAF9F6',
-    ink: dark ? '#C9CDD3' : '#15171A',
-    brand: '#F26A21',
+    run: dark ? '#7DB08F' : '#4E8A68',
+    idle: dark ? '#D6B56E' : '#B8954A',
+    mould: dark ? '#8AA6CF' : '#4A6E9E',
+    down: dark ? '#E0826B' : '#B9533F',
+    off: dark ? '#4A4744' : '#A8A298',
+    fg: dark ? '#FFFFFF' : '#1F2022',
+    fg2: dark ? '#CFCCC7' : '#4A4744',
+    fg3: dark ? '#8A857C' : '#6B675F',
+    fg4: dark ? '#6B675F' : '#A8A298',
+    line: dark ? '#38393C' : '#E3E1DE',
+    panel: dark ? '#212225' : '#FFFFFF',
+    panel2: dark ? '#27282B' : '#FAFAF9',
+    ink: dark ? '#CFCCC7' : '#1F2022',
+    brand: '#FE4B1E',
   };
 }
 export const stateHex = (s: MState, dark: boolean) => (dark ? STATE_META[s].hexDark : STATE_META[s].hexLight);
@@ -108,12 +108,12 @@ export const planColor = (p: number) => `rgb(var(--${planVar[planStatus(p)]}))`;
 export const planText = (p: number) => `rgb(var(--${planVar[planStatus(p)]}-t))`;
 
 export function TeamDot({ team, className }: { team: TeamId | 'unassigned' | null | undefined; className?: string }) {
-  const c = team && team !== 'unassigned' ? TEAMS[team].color : '#D8382B';
+  const c = team && team !== 'unassigned' ? TEAMS[team].color : '#B9533F';
   return <span className={cx('inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]', className)} style={{ background: c }} />;
 }
 
 export function StageBadge({ stage, team, className }: { stage: Stage; team: TeamId | null; className?: string }) {
-  const color = team ? TEAMS[team].color : '#D8382B';
+  const color = team ? TEAMS[team].color : '#B9533F';
   const cls = stage === 'unassigned' ? 'pat-unassigned' : stage === 'assigned' ? 'pat-assigned' : stage === 'working' ? 'pat-working' : stage === 'spare' ? 'pat-spare' : stage === 'verify' ? 'pat-verify' : '';
   return (
     <span className={cx('inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em]', className)}>
@@ -186,19 +186,19 @@ export function Kpi({
 }) {
   return (
     <motion.div whileHover={onClick ? { y: -2 } : undefined} onClick={onClick} className={cx('flex min-w-0 flex-col gap-1.5', onClick && 'cursor-pointer', className)} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
-      <div className={cx('overline truncate', dark && '!text-[#8A9099]')}>{label}</div>
-      <div className="flex items-baseline gap-1.5">
-        <span className="num text-[32px] font-bold leading-9" style={tone ? { color: `rgb(var(--${tone}-t))` } : undefined}>
+      <div className={cx('overline truncate', dark && '')}>{label}</div>
+      <div className="flex flex-wrap items-baseline gap-x-1.5">
+        <span className="num whitespace-nowrap text-[30px] font-normal leading-9" style={tone ? { color: `rgb(var(--${tone}-t))` } : undefined}>
           {value}
         </span>
-        {unit && <span className={cx('num text-[16px] font-semibold', dark ? 'text-[#8A9099]' : 'text-fg3')}>{unit}</span>}
+        {unit && <span className="num whitespace-nowrap text-[14px] text-fg3">{unit}</span>}
       </div>
       {bar && (
         <div className="h-1.5 overflow-hidden rounded-full bg-line/70">
           <motion.div className="h-full rounded-full" initial={{ width: 0 }} animate={{ width: `${Math.min(100, Math.max(0, bar.v))}%` }} transition={{ duration: 0.6, ease: EASE }} style={{ background: bar.tone ?? 'rgb(var(--fg2))' }} />
         </div>
       )}
-      {sub && <div className={cx('truncate text-[12px]', dark ? 'text-[#8A9099]' : 'text-fg3')}>{sub}</div>}
+      {sub && <div className={cx('truncate text-[12px]', 'text-fg3')}>{sub}</div>}
       {children}
     </motion.div>
   );
@@ -276,14 +276,14 @@ export function TimelineBar({
           <div
             key={i}
             className={cx('absolute top-0 h-full', patterns && segClass(s))}
-            style={{ left: `${((a - t0) / span) * 100}%`, width: `${((b - a) / span) * 100}%`, background: useTeam && s.stage === 'working' ? team : segBg(s, patterns), ['--team' as string]: team ?? '#F97316' }}
+            style={{ left: `${((a - t0) / span) * 100}%`, width: `${((b - a) / span) * 100}%`, background: useTeam && s.stage === 'working' ? team : segBg(s, patterns), ['--team' as string]: team ?? '#C47A55' }}
             onMouseEnter={(e) => onSeg?.(s, e)}
             onMouseMove={(e) => onSeg?.(s, e)}
           />
         );
       })}
       <div className="absolute top-0 h-full bg-[repeating-linear-gradient(135deg,rgb(var(--line))_0_2px,transparent_2px_6px)] opacity-60" style={{ left: `${nowPct}%`, right: 0 }} />
-      {showNow && <div className="absolute top-[-2px] z-[2] h-[calc(100%+4px)] w-[2px] bg-brand shadow-[0_0_8px_rgba(242,106,33,0.8)]" style={{ left: `calc(${nowPct}% - 1px)` }} />}
+      {showNow && <div className="absolute top-[-2px] z-[2] h-[calc(100%+4px)] w-[2px] bg-brand shadow-[0_0_8px_rgba(254,75,30,0.8)]" style={{ left: `calc(${nowPct}% - 1px)` }} />}
     </div>
   );
 }
@@ -440,7 +440,7 @@ export function PhoneFrame({ children, time, className, label }: { children: Rea
   return (
     <div className={cx('flex flex-col items-center gap-3', className)}>
       {label && <div className="overline">{label}</div>}
-      <div className="relative h-[720px] w-[360px] shrink-0 rounded-[44px] border border-line2 bg-[#0a0b0d] p-[10px] shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
+      <div className="relative h-[720px] w-[360px] shrink-0 rounded-[44px] border border-line2 bg-[#141517] p-[10px] shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
         <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[36px] bg-bg">
           <div className="flex h-9 shrink-0 items-center justify-between px-6 text-[12px] font-semibold text-fg">
             <span className="num">{time}</span>

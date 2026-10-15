@@ -61,11 +61,11 @@ function leakValue(w: World, m: Machine, basis: ValueBasis) {
   if (m.state === 'DOWN' || m.state === 'IDLE') {
     const sec = w.t - m.since;
     const tk = m.ticketId ? w.ticket[m.ticketId] : undefined;
-    return { value: (sec / std) * cav * v, cause: m.reasonLogged ? m.reason : 'no reason logged', dur: sec, owner: tk ? stageLabel(tk.stage, tk.team) : m.state === 'IDLE' ? `IDLE · ${m.team ? TEAMS[m.team].label : ''}` : 'NOT ASSIGNED', color: tk?.team ? TEAMS[tk.team].color : m.state === 'IDLE' ? '#E5B000' : '#D8382B' };
+    return { value: (sec / std) * cav * v, cause: m.reasonLogged ? m.reason : 'no reason logged', dur: sec, owner: tk ? stageLabel(tk.stage, tk.team) : m.state === 'IDLE' ? `IDLE · ${m.team ? TEAMS[m.team].label : ''}` : 'NOT ASSIGNED', color: tk?.team ? TEAMS[tk.team].color : m.state === 'IDLE' ? '#B8954A' : '#B9533F' };
   }
   const rej = m.rejBase + m.rejSpike;
   if (rej > 0.035) return { value: m.bad * v + m.bad * (p?.material$ ?? 20), cause: `reject ${(rej * 100).toFixed(1)}% · short shots / flash`, dur: m.runSec, owner: 'QUALITY ASSIGNED', color: TEAMS.quality.color };
-  if (m.cycleFactor > 1.06) return { value: Math.max(0, m.runStdParts - m.parts) * v, cause: `slow cycle +${((m.cycleFactor - 1) * 100).toFixed(0)}%`, dur: m.runSec, owner: 'NO OWNER', color: '#D8382B' };
+  if (m.cycleFactor > 1.06) return { value: Math.max(0, m.runStdParts - m.parts) * v, cause: `slow cycle +${((m.cycleFactor - 1) * 100).toFixed(0)}%`, dur: m.runSec, owner: 'NO OWNER', color: '#B9533F' };
   return { value: 0, cause: '', dur: 0, owner: '', color: '' };
 }
 
@@ -117,12 +117,12 @@ function MoneyView() {
         {win !== 'today' && <span className="text-[12px] text-fg3">Historical windows replay stored daily closes · today is live</span>}
       </div>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <div className="col-span-2 overflow-hidden rounded-[12px] border border-[#2A2F36] bg-[#111316] p-5 text-white lg:col-span-1">
-          <div className="overline !text-[#8A9099]">Lost {win === 'today' ? `today · to ${clock(w.t)}` : win === 'yesterday' ? 'yesterday' : win === 'mtd' ? 'month to date' : 'this quarter'}</div>
-          <div className="num mt-1 text-[40px] font-bold leading-[44px] text-[#FF8A7A]">
+        <div className="glass col-span-2 overflow-hidden p-5 lg:col-span-1">
+          <div className="overline !text-fg3">Lost {win === 'today' ? `today · to ${clock(w.t)}` : win === 'yesterday' ? 'yesterday' : win === 'mtd' ? 'month to date' : 'this quarter'}</div>
+          <div className="num mt-1 text-[40px] font-bold leading-[44px] text-down-t">
             <Ticker value={scale(a.lost)} format={(n) => inr(n)} />
           </div>
-          <div className="text-[12px] text-[#8A9099]">
+          <div className="text-[12px] text-fg3">
             {pct((a.lost / a.capValue) * 100)} of value at standard{win === 'today' && <> · yesterday same time {inr(M.yday)}</>}
           </div>
         </div>
@@ -150,11 +150,14 @@ function MoneyView() {
             {owners.map(([key, v], i) => (
               <div key={key}>
                 <div className="flex justify-between text-[13px]">
-                  <span className={cx(key === 'unassigned' && 'font-semibold text-down-t')}>{OWNER_META[key]?.label ?? key}</span>
+                  <span className={cx('flex items-center gap-2', key === 'unassigned' && 'text-down-t')}>
+                    <span className={cx('h-2 w-2 rounded-full', key === 'unassigned' && 'pat-unassigned')} style={{ background: key === 'unassigned' ? undefined : OWNER_META[key]?.color }} />
+                    {OWNER_META[key]?.label ?? key}
+                  </span>
                   <span className="num font-semibold">{inr(scale(v))}</span>
                 </div>
-                <div className="mt-1 h-2.5 overflow-hidden rounded-[2px] bg-line/50">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${(v / maxOwner) * 100}%` }} transition={{ delay: i * 0.06, duration: 0.6, ease: EASE }} className={cx('h-full', key === 'unassigned' && 'pat-unassigned')} style={{ background: key === 'unassigned' ? undefined : OWNER_META[key]?.color }} />
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-line/60">
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${(v / maxOwner) * 100}%` }} transition={{ delay: i * 0.06, duration: 0.6, ease: EASE }} className={cx('h-full rounded-full', key === 'unassigned' && 'pat-unassigned')} style={{ background: key === 'unassigned' ? undefined : i === 0 ? 'rgb(var(--fg) / 0.8)' : 'rgb(var(--fg) / 0.32)' }} />
                 </div>
               </div>
             ))}
@@ -191,7 +194,7 @@ function MoneyView() {
               <div key={o.id} className="flex items-center gap-3 py-1.5 text-[13px]">
                 <span className="w-24 font-semibold">{o.name}</span>
                 <div className="h-2 flex-1 overflow-hidden rounded-full bg-line/60">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${(m.lost / M.byOrg[0].m.lost) * 100}%` }} transition={{ duration: 0.6, ease: EASE }} className="h-full rounded-full bg-down/80" />
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${(m.lost / M.byOrg[0].m.lost) * 100}%` }} transition={{ duration: 0.6, ease: EASE }} className="h-full rounded-full bg-fg/70" />
                 </div>
                 <span className="num w-16 text-right font-semibold">{inr(m.lost)}</span>
                 <span className="num w-14 text-right text-[12px]" style={{ color: planText(plan) }}>{pct(plan)}</span>
@@ -220,13 +223,13 @@ function Waterfall({ m, k, onBar, drill }: { m: MoneyT; k: number; onBar: (s: st
   const cap = m.capValue;
   const stops = m.downtime + m.idle;
   const steps: { key: string; l: string; s: string; v: number; c: string; base?: boolean; extra?: boolean }[] = [
-    { key: 'cap', l: 'Value at standard', s: 'full capacity to now · plan at 82%', v: cap, c: 'rgb(var(--fg2))', base: true },
-    { key: 'down', l: 'Downtime', s: 'machines stopped or idle', v: -stops, c: 'rgb(var(--down))' },
-    { key: 'mc', l: 'Mould change', s: 'changeover time', v: -m.mouldChange, c: TEAMS.mouldchange.color },
-    { key: 'speed', l: 'Speed loss', s: 'cycle slower than std', v: -m.speed, c: 'rgb(var(--idle))' },
-    { key: 'rej', l: 'Rejects', s: 'NOT OK parts, lost sale', v: -m.rejects, c: TEAMS.quality.color },
-    { key: 'actual', l: 'Actual', s: 'earned', v: m.actual, c: 'rgb(var(--run))', base: true },
-    { key: 'cash', l: '+ Cash costs', s: 'scrap material + idle energy', v: -(m.scrap + m.energy), c: TEAMS.utilities.color, extra: true },
+    { key: 'cap', l: 'Value at standard', s: 'full capacity to now · plan at 82%', v: cap, c: 'rgb(var(--fg) / 0.85)', base: true },
+    { key: 'down', l: 'Downtime', s: 'machines stopped or idle', v: -stops, c: 'rgb(var(--down) / 0.9)' },
+    { key: 'mc', l: 'Mould change', s: 'changeover time', v: -m.mouldChange, c: 'rgb(var(--down) / 0.65)' },
+    { key: 'speed', l: 'Speed loss', s: 'cycle slower than std', v: -m.speed, c: 'rgb(var(--down) / 0.45)' },
+    { key: 'rej', l: 'Rejects', s: 'NOT OK parts, lost sale', v: -m.rejects, c: 'rgb(var(--down) / 0.3)' },
+    { key: 'actual', l: 'Actual', s: 'earned', v: m.actual, c: 'rgb(var(--run) / 0.85)', base: true },
+    { key: 'cash', l: '+ Cash costs', s: 'scrap material + idle energy', v: -(m.scrap + m.energy), c: 'rgb(var(--fg4))', extra: true },
   ];
   let x = 0;
   const bars = steps.map((st) => {
@@ -260,7 +263,7 @@ function Waterfall({ m, k, onBar, drill }: { m: MoneyT; k: number; onBar: (s: st
           </span>
           <span className="relative h-8">
             <motion.span
-              className={cx('absolute top-0 h-full rounded-[3px]', b.key === 'cash' && 'opacity-70')}
+              className="absolute top-1 h-[calc(100%-8px)] rounded-[6px]"
               style={{ left: `${b.left}%`, background: b.c }}
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: `${b.wd}%`, opacity: 1 }}
@@ -378,7 +381,7 @@ function Briefing() {
                       </td>
                       <td className="!text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <div className="h-1.5 w-20 overflow-hidden rounded-full bg-line/60"><div className="h-full bg-down/80" style={{ width: `${(r.m.lost / M.byUnit[0].m.lost) * 100}%` }} /></div>
+                          <div className="h-1.5 w-20 overflow-hidden rounded-full bg-line/60"><div className="h-full rounded-full bg-fg/70" style={{ width: `${(r.m.lost / M.byUnit[0].m.lost) * 100}%` }} /></div>
                           <span className="num w-16 font-bold">{inr(r.m.lost)}</span>
                         </div>
                       </td>
@@ -400,14 +403,14 @@ function Briefing() {
         <div className="flex flex-col gap-4">
           <Panel title="October · loss vs budget" sub={`${inr(M.mtd)} / ${inr(M.budgetMtd)} budget to date`}>
             <div className="relative flex h-[170px] items-end gap-1.5">
-              <div className="absolute inset-x-0 z-[1] border-t-2 border-dashed border-fg3/70" style={{ bottom: `${(M.dayBudget / max) * 100}%` }}>
+              <div className="absolute inset-x-0 z-[1] border-t border-dashed border-brand" style={{ bottom: `${(M.dayBudget / max) * 100}%` }}>
                 <span className="absolute -top-5 right-0 rounded bg-panel px-1 text-[10px] font-semibold text-fg2">Budget {inr(M.dayBudget)} / day</span>
               </div>
               {days.map((d, i) => {
                 const today = i === days.length - 1;
                 return (
                   <div key={i} className="flex h-full flex-1 flex-col justify-end">
-                    <motion.div initial={{ height: 0 }} animate={{ height: `${(d / max) * 100}%` }} transition={{ delay: i * 0.04, duration: 0.5, ease: EASE }} className="rounded-t-[2px]" style={{ background: today ? 'rgb(var(--fg4))' : d > M.dayBudget ? 'rgb(var(--down))' : 'rgb(var(--fg2))' }} />
+                    <motion.div initial={{ height: 0 }} animate={{ height: `${(d / max) * 100}%` }} transition={{ delay: i * 0.04, duration: 0.5, ease: EASE }} className="rounded-t-[5px]" style={{ background: today ? 'repeating-linear-gradient(135deg, rgb(var(--fg) / 0.35) 0 4px, rgb(var(--fg) / 0.12) 4px 8px)' : d > M.dayBudget ? 'rgb(var(--down) / 0.45)' : 'rgb(var(--fg) / 0.22)' }} />
                     <span className="num mt-1 text-center text-[9px] text-fg3">{today ? 'live' : w.day - (days.length - 1 - i)}</span>
                   </div>
                 );
@@ -431,9 +434,9 @@ function Briefing() {
           </Panel>
         </div>
       </div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="relative overflow-hidden rounded-[14px] border border-brand/50 bg-[linear-gradient(120deg,rgba(242,106,33,0.16),transparent_60%)] p-6">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass relative overflow-hidden p-6">
         <div className="flex items-start gap-4">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand text-ink">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
             <Lightbulb size={22} />
           </div>
           <div>

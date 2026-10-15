@@ -141,7 +141,7 @@ function Board() {
                   Shift {h === 8 ? 'B' : h === 16 ? 'C' : 'A'}
                 </span>
               ))}
-              <div className="absolute bottom-0 top-0 z-[4] w-[2px] bg-brand shadow-[0_0_10px_rgba(242,106,33,0.8)]" style={{ left: pctX(nowH) }}>
+              <div className="absolute bottom-0 top-0 z-[4] w-[2px] bg-brand shadow-[0_0_10px_rgba(254,75,30,0.8)]" style={{ left: pctX(nowH) }}>
                 <span className="num absolute -top-0 left-1 rounded bg-brand px-1 text-[10px] font-semibold text-ink">now</span>
               </div>
               <div className="absolute bottom-0 left-0 top-0 bg-[repeating-linear-gradient(135deg,rgb(var(--line)/0.5)_0_2px,transparent_2px_8px)]" style={{ width: pctX(nowH) }} />
@@ -150,7 +150,7 @@ function Board() {
                   {jobs
                     .filter((j) => j.machineId === m.id && j.start < SPAN)
                     .map((j) => {
-                      const team = j.customer.startsWith('Orion') ? '#5B8DFF' : j.customer.startsWith('Nova') ? '#0F9D8F' : '#A3A9B3';
+                      const team = j.customer.startsWith('Orion') ? '#8AA6CF' : j.customer.startsWith('Nova') ? '#4F8C82' : '#B8B4AD';
                       const bad = conflicts.has(j.id);
                       return (
                         <motion.div key={j.id} className="absolute top-1.5" initial={false} animate={{ left: pctX(j.start - j.changeover) }} transition={{ duration: anim ? 0.9 : 0.25, ease: EASE, delay: anim ? (i % 10) * 0.05 : 0 }} style={{ height: ROW - 12, width: `calc(${pctX(j.dur + j.changeover)})` }}>
@@ -181,9 +181,9 @@ function Board() {
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-4 text-[12px] text-fg3">
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm border-l-[3px] border-[#5B8DFF] bg-[#5B8DFF33]" />Orion Motors</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm border-l-[3px] border-[#0F9D8F] bg-[#0F9D8F33]" />Nova Appliances</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm border-l-[3px] border-[#A3A9B3] bg-[#A3A9B333]" />Kestrel Two-Wheelers</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm border-l-[3px] border-[#8AA6CF] bg-[#5B8DFF33]" />Orion Motors</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm border-l-[3px] border-[#4F8C82] bg-[#0F9D8F33]" />Nova Appliances</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm border-l-[3px] border-[#B8B4AD] bg-[#A3A9B333]" />Kestrel Two-Wheelers</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 bg-[repeating-linear-gradient(135deg,#A855F7_0_4px,transparent_4px_8px)]" />Mould change ({TEAMS.mouldchange.label})</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-3 w-5 rounded-sm ring-2 ring-down" />Conflict</span>
       </div>

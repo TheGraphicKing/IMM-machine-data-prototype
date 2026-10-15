@@ -34,7 +34,7 @@ export default function Stage({
       document.removeEventListener('visibilitychange', v);
     };
   }, []);
-  const background = bg ?? (theme === 'dark' ? '#0B0D10' : '#E9E7E1');
+  const background = bg ?? (theme === 'dark' ? '#18191B' : '#F4F3F1');
   return (
     <div ref={ref} className={className} style={className?.includes('absolute') ? undefined : { position: 'relative' }}>
       <Canvas
@@ -49,15 +49,15 @@ export default function Stage({
         <Suspense fallback={null}>{children}</Suspense>
         {bloom && !calm && hero && (
           <EffectComposer multisampling={0}>
-            <Bloom intensity={theme === 'dark' ? 1.0 : 0.45} luminanceThreshold={0.6} luminanceSmoothing={0.2} mipmapBlur />
-            <Vignette eskil={false} offset={0.25} darkness={theme === 'dark' ? 0.7 : 0.3} />
+            <Bloom intensity={theme === 'dark' ? 0.55 : 0.25} luminanceThreshold={0.75} luminanceSmoothing={0.2} mipmapBlur />
+            <Vignette eskil={false} offset={0.25} darkness={theme === 'dark' ? 0.45 : 0.15} />
             <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={CA_OFFSET} radialModulation={false} modulationOffset={0} />
           </EffectComposer>
         )}
         {bloom && !calm && !hero && (
           <EffectComposer multisampling={0}>
-            <Bloom intensity={theme === 'dark' ? 0.9 : 0.45} luminanceThreshold={0.6} luminanceSmoothing={0.2} mipmapBlur />
-            <Vignette eskil={false} offset={0.25} darkness={theme === 'dark' ? 0.7 : 0.3} />
+            <Bloom intensity={theme === 'dark' ? 0.5 : 0.22} luminanceThreshold={0.75} luminanceSmoothing={0.2} mipmapBlur />
+            <Vignette eskil={false} offset={0.25} darkness={theme === 'dark' ? 0.45 : 0.15} />
           </EffectComposer>
         )}
       </Canvas>

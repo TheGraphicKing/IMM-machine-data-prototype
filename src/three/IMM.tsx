@@ -3,20 +3,20 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { MState } from '../sim/types';
 
-export const STATUS_HEX: Record<MState, string> = { RUN: '#34C77B', IDLE: '#FFC233', MC: '#5B8DFF', DOWN: '#FF5A47', OFF: '#4A4F57' };
+export const STATUS_HEX: Record<MState, string> = { RUN: '#7DB08F', IDLE: '#D6B56E', MC: '#8AA6CF', DOWN: '#E0826B', OFF: '#4A4744' };
 
 // shared materials (one GPU program each)
 const M = {
-  body: new THREE.MeshStandardMaterial({ color: '#2B3036', metalness: 0.55, roughness: 0.45 }),
-  bodyLight: new THREE.MeshStandardMaterial({ color: '#3A4048', metalness: 0.6, roughness: 0.35 }),
-  steel: new THREE.MeshStandardMaterial({ color: '#8C939C', metalness: 0.9, roughness: 0.25 }),
-  dark: new THREE.MeshStandardMaterial({ color: '#16191D', metalness: 0.3, roughness: 0.7 }),
-  mould: new THREE.MeshStandardMaterial({ color: '#4E6278', metalness: 0.85, roughness: 0.3 }),
-  glass: new THREE.MeshPhysicalMaterial({ color: '#9fb6cc', transparent: true, opacity: 0.08, roughness: 0.1, metalness: 0, depthWrite: false }),
-  hopper: new THREE.MeshStandardMaterial({ color: '#C9CDD3', metalness: 0.7, roughness: 0.3 }),
-  accent: new THREE.MeshStandardMaterial({ color: '#6B7079', metalness: 0.6, roughness: 0.4 }),
-  part: new THREE.MeshStandardMaterial({ color: '#E6E1D3', roughness: 0.6 }),
-  bin: new THREE.MeshStandardMaterial({ color: '#2F6FEB', roughness: 0.6, metalness: 0.1 }),
+  body: new THREE.MeshStandardMaterial({ color: '#2E2F32', metalness: 0.55, roughness: 0.45 }),
+  bodyLight: new THREE.MeshStandardMaterial({ color: '#4A4744', metalness: 0.6, roughness: 0.35 }),
+  steel: new THREE.MeshStandardMaterial({ color: '#A8A298', metalness: 0.9, roughness: 0.25 }),
+  dark: new THREE.MeshStandardMaterial({ color: '#1C1D1F', metalness: 0.3, roughness: 0.7 }),
+  mould: new THREE.MeshStandardMaterial({ color: '#5B6470', metalness: 0.85, roughness: 0.3 }),
+  glass: new THREE.MeshPhysicalMaterial({ color: '#CFCCC7', transparent: true, opacity: 0.08, roughness: 0.1, metalness: 0, depthWrite: false }),
+  hopper: new THREE.MeshStandardMaterial({ color: '#CFCCC7', metalness: 0.7, roughness: 0.3 }),
+  accent: new THREE.MeshStandardMaterial({ color: '#6B675F', metalness: 0.6, roughness: 0.4 }),
+  part: new THREE.MeshStandardMaterial({ color: '#E3E1DE', roughness: 0.6 }),
+  bin: new THREE.MeshStandardMaterial({ color: '#4A6E9E', roughness: 0.6, metalness: 0.1 }),
 };
 
 export function tempColor(t: number, set: number) {
@@ -53,8 +53,8 @@ export default function IMM({ state, cycle = 30, tonnage = 350, zones, zoneSet, 
   const status = STATUS_HEX[state];
   const haloMat = useMemo(() => new THREE.MeshBasicMaterial({ color: status, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }), [status]);
   const lampMat = useMemo(() => new THREE.MeshStandardMaterial({ color: status, emissive: status, emissiveIntensity: state === 'OFF' ? 0.1 : 2.4, toneMapped: false }), [status, state]);
-  const screenMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#0b1220', emissive: state === 'DOWN' ? '#ff5a47' : '#5B8DFF', emissiveIntensity: state === 'OFF' ? 0.05 : 0.9, toneMapped: false }), [state]);
-  const zoneMats = useMemo(() => Array.from({ length: 5 }, () => new THREE.MeshStandardMaterial({ color: '#333', emissive: '#f97316', emissiveIntensity: 0.8, metalness: 0.4, roughness: 0.5, toneMapped: false })), []);
+  const screenMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#1F2022', emissive: state === 'DOWN' ? '#E0826B' : '#8AA6CF', emissiveIntensity: state === 'OFF' ? 0.05 : 0.9, toneMapped: false }), [state]);
+  const zoneMats = useMemo(() => Array.from({ length: 5 }, () => new THREE.MeshStandardMaterial({ color: '#333', emissive: '#C47A55', emissiveIntensity: 0.8, metalness: 0.4, roughness: 0.5, toneMapped: false })), []);
   const phase0 = (seed * 0.137) % 1;
 
   useFrame(({ clock }) => {
@@ -100,7 +100,7 @@ export default function IMM({ state, cycle = 30, tonnage = 350, zones, zoneSet, 
       });
     } else {
       zoneMats.forEach((m, i) => {
-        m.emissive.set(state === 'RUN' ? '#f97316' : state === 'OFF' ? '#222' : '#b4561c');
+        m.emissive.set(state === 'RUN' ? '#C47A55' : state === 'OFF' ? '#222' : '#A85A3A');
         m.emissiveIntensity = state === 'RUN' ? 0.9 + Math.sin(t * 2 + i) * 0.1 : 0.4;
       });
     }

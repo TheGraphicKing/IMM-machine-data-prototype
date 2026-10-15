@@ -40,7 +40,7 @@ function answer(w: World, q: string): Answer {
     const down = hms.filter((m) => m.state === 'DOWN');
     return {
       text: `Manesar U1 is at ${pct(d.plan)} of plan to ${clock(w.t)} (${fmt(a.good)} of ${fmt(a.planParts)} good parts), so it is ${d.plan >= 95 ? 'on track' : d.plan >= 88 ? 'at risk' : 'behind'}. Availability is the main gap at ${d.A.toFixed(0)}% — ${Math.round(p.total / 60)} machine-minutes were lost to stops this shift. The top three causes are ${top.map((t) => `${t.label.toLowerCase()} (${Math.round(t.sec / 60)} min)`).join(', ')}. Right now ${down.length} machines are down: ${down.map((m) => `${m.code} (${m.reasonLogged ? m.reason.toLowerCase() : 'no reason logged'})`).join(', ')}. Performance is ${d.P.toFixed(0)}% and quality ${d.Q.toFixed(1)}%, so fixing stops and assigning the unassigned one is the fastest lever.`,
-      chart: top.map((t) => ({ l: t.label, v: t.sec / 60, c: t.team === 'unassigned' ? '#D8382B' : TEAMS[t.team]?.color, fmt: (n) => `${Math.round(n)} min` })),
+      chart: top.map((t) => ({ l: t.label, v: t.sec / 60, c: t.team === 'unassigned' ? '#B9533F' : TEAMS[t.team]?.color, fmt: (n) => `${Math.round(n)} min` })),
       link: { to: '/unit/MN1', l: 'Open Manesar U1 dashboard' },
       how: ['kpis(scope=unit:MN1, window=shift:A, metrics=[plan, oee, A, P, Q])', 'downtime_pareto(scope=unit:MN1, window=shift:A)', 'machines(state=DOWN, scope=unit:MN1)'],
     };
@@ -67,9 +67,9 @@ function answer(w: World, q: string): Answer {
         ? `Not yet. The ${o.truck} for ${o.customer} needs ${fmt(o.qty)} ${r.part?.name.toLowerCase()}s. We have ${fmt(o.stock)} in FG stock and project ${fmt(r.projected - o.stock)} more at the live run rate, so it is ${fmt(r.short)} short (${inr(r.value)} sales value). ${ms.filter((m) => m.state !== 'RUN').map((m) => `${m.code} is ${m.state === 'DOWN' ? 'down' : m.state.toLowerCase()} (${m.reason.toLowerCase()})`).join('; ') || 'Both machines are running but below rate'}. Getting ${ms[0].code} back within 30 min closes most of the gap.`
         : `Yes. The ${o.truck} needs ${fmt(o.qty)}; stock ${fmt(o.stock)} plus projected ${fmt(r.projected - o.stock)} covers it with ${fmt(-r.short + (r.projected - o.qty))} to spare.`,
       chart: [
-        { l: 'FG stock', v: o.stock, c: '#9AA0A8', fmt },
-        { l: 'Projected output', v: r.projected - o.stock, c: '#34C77B', fmt },
-        { l: 'Shortfall', v: r.short, c: '#FF5A47', fmt },
+        { l: 'FG stock', v: o.stock, c: '#A8A298', fmt },
+        { l: 'Projected output', v: r.projected - o.stock, c: '#7DB08F', fmt },
+        { l: 'Shortfall', v: r.short, c: '#E0826B', fmt },
       ],
       link: { to: '/dispatch', l: 'Open Dispatch & Gate' },
       how: [`orders(customer=Orion Motors, unit=MN1, due≤18:00)`, `run_rate(machines=[${o.machineIds.join(', ')}])`, 'fg_stock(part)'],
@@ -81,7 +81,7 @@ function answer(w: World, q: string): Answer {
     const md = w.mould[t.m.mouldId];
     return {
       text: `Mould ${md.id} (${md.name}) on ${t.m.code}, ${w.unit[t.m.unitId].name}, has the worst reject rate this shift at ${pct(t.r)} — ${fmt(t.m.bad)} NOT OK parts against a 3.0% limit. Most are ${t.m.hot ? 'heavy parts (flash) as barrel zone 4 runs hot' : 'light parts (short shots), consistent with low cushion'}. ${list.slice(1, 3).map((x) => `${x.m.mouldId} on ${x.m.code} is next at ${pct(x.r)}`).join('; ')}.`,
-      chart: list.map((x) => ({ l: `${x.m.mouldId} · ${x.m.code}`, v: x.r, c: x.r > 3 ? '#FF5A47' : '#9AA0A8', fmt: (n) => pct(n) })),
+      chart: list.map((x) => ({ l: `${x.m.mouldId} · ${x.m.code}`, v: x.r, c: x.r > 3 ? '#E0826B' : '#A8A298', fmt: (n) => pct(n) })),
       link: { to: `/machine/${t.m.id}`, l: `Open ${t.m.code} quality` },
       how: ['records(window=shift:A, group_by=mould, metric=reject_rate)', 'process_params(machine, window=last 60 shots)'],
     };
@@ -93,7 +93,7 @@ function answer(w: World, q: string): Answer {
     const rows = [{ label: 'Shift A today (live)', out: a.good, oee: d.oee, rej: d.rej }, ...prev.slice(0, 3)];
     return {
       text: `Live Shift A is at ${pct(d.oee)} OEE with ${fmt(a.good)} good parts so far (${pct(d.rej)} reject). ${prev.map((p) => `${p.label}: ${pct(p.oee)} OEE, ${fmt(p.out)} parts, ${pct(p.rej)} reject`).join('; ')}. Today’s shift is pacing ${d.oee < (prev[0]?.oee ?? 0) ? 'below' : 'above'} last night, mainly because of the heater and water-leak stops on IMM-07 and IMM-02.`,
-      chart: rows.map((r) => ({ l: r.label, v: r.oee, c: r.label.includes('live') ? '#F26A21' : '#9AA0A8', fmt: (n) => pct(n) })),
+      chart: rows.map((r) => ({ l: r.label, v: r.oee, c: r.label.includes('live') ? '#FE4B1E' : '#A8A298', fmt: (n) => pct(n) })),
       link: { to: '/unit/MN1', l: 'Open shift comparison' },
       how: ['kpis(scope=unit:MN1, window=shift:A..C, metrics=[oee, good, reject])'],
     };
@@ -104,7 +104,7 @@ function answer(w: World, q: string): Answer {
     const heater = (M.all.byOwner.maintenance ?? 0) * mtdK * 0.45;
     return {
       text: `Heater-band and thermocouple failures have cost about ${inr(heater)} this month across 4 units, almost all on 450 T machines in Hall B. Median repair time is 41 min and 38% of those stops waited more than 10 min for a team. A preventive heater check on every 450 T machine costs about ₹1.8 L and would pay back in under a month at this rate.`,
-      chart: M.past.slice(-7).map((v, i) => ({ l: `${w.day - 7 + i} Oct`, v: v * 0.09, c: '#F97316', fmt: (n) => inr(n) })),
+      chart: M.past.slice(-7).map((v, i) => ({ l: `${w.day - 7 + i} Oct`, v: v * 0.09, c: '#C47A55', fmt: (n) => inr(n) })),
       link: { to: '/briefing', l: 'Open morning briefing' },
       how: ['tickets(root_cause in [MM-04, MM-07], window=month)', `money(owner=maintenance, window=mtd, basis=${basis})`],
     };

@@ -35,22 +35,22 @@ export function layout(ms: Machine[]) {
   return { pos, halls, hallW };
 }
 
-const floorMat = new THREE.MeshStandardMaterial({ color: '#15181C', roughness: 0.9, metalness: 0.1 });
-const floorMatLight = new THREE.MeshStandardMaterial({ color: '#D9D6CE', roughness: 0.95 });
-const lineMat = new THREE.MeshBasicMaterial({ color: '#8A9099', transparent: true, opacity: 0.55 });
-const truckMat = new THREE.MeshStandardMaterial({ color: '#2A2F36', metalness: 0.4, roughness: 0.5 });
-const cabMat = new THREE.MeshStandardMaterial({ color: '#C9CDD3', metalness: 0.3, roughness: 0.5 });
-const plateMat = new THREE.MeshBasicMaterial({ color: '#FFE14D' });
-const personMat = new THREE.MeshStandardMaterial({ color: '#F26A21', emissive: '#F26A21', emissiveIntensity: 0.6 });
-const beltMat = new THREE.MeshStandardMaterial({ color: '#22262C', metalness: 0.4 });
-const boxMat = new THREE.MeshStandardMaterial({ color: '#B98A4E', roughness: 0.8 });
-const craneMat = new THREE.MeshStandardMaterial({ color: '#5A616B', metalness: 0.7, roughness: 0.35 });
+const floorMat = new THREE.MeshStandardMaterial({ color: '#212225', roughness: 0.9, metalness: 0.1 });
+const floorMatLight = new THREE.MeshStandardMaterial({ color: '#E3E1DE', roughness: 0.95 });
+const lineMat = new THREE.MeshBasicMaterial({ color: '#8A857C', transparent: true, opacity: 0.55 });
+const truckMat = new THREE.MeshStandardMaterial({ color: '#38393C', metalness: 0.4, roughness: 0.5 });
+const cabMat = new THREE.MeshStandardMaterial({ color: '#CFCCC7', metalness: 0.3, roughness: 0.5 });
+const plateMat = new THREE.MeshBasicMaterial({ color: '#F4E3A1' });
+const personMat = new THREE.MeshStandardMaterial({ color: '#FE4B1E', emissive: '#FE4B1E', emissiveIntensity: 0.6 });
+const beltMat = new THREE.MeshStandardMaterial({ color: '#2E2F32', metalness: 0.4 });
+const boxMat = new THREE.MeshStandardMaterial({ color: '#A8865A', roughness: 0.8 });
+const craneMat = new THREE.MeshStandardMaterial({ color: '#6B675F', metalness: 0.7, roughness: 0.35 });
 
 function oeeColor(oee: number) {
   const c = new THREE.Color();
-  if (oee >= 75) c.set('#34C77B');
-  else if (oee >= 60) c.set('#FFC233');
-  else c.set('#FF5A47');
+  if (oee >= 75) c.set('#7DB08F');
+  else if (oee >= 60) c.set('#D6B56E');
+  else c.set('#E0826B');
   return c;
 }
 
@@ -93,16 +93,16 @@ export default function Factory({ w, ms, opts, selected, onSelect, hover, setHov
   return (
     <>
       <ambientLight intensity={dark ? 0.55 : 0.85} />
-      <hemisphereLight args={[dark ? '#30405a' : '#ffffff', dark ? '#0b0d10' : '#cfc9bd', dark ? 0.4 : 0.6]} />
+      <hemisphereLight args={[dark ? '#3A3B3E' : '#ffffff', dark ? '#18191B' : '#E3E1DE', dark ? 0.4 : 0.6]} />
       <directionalLight position={[20, 40, 25]} intensity={dark ? 1.6 : 2.0} />
-      <pointLight position={[-15, 12, 0]} intensity={dark ? 160 : 60} color="#5B8DFF" distance={40} />
-      <pointLight position={[15, 12, 0]} intensity={dark ? 160 : 60} color="#F26A21" distance={40} />
+      <pointLight position={[-15, 12, 0]} intensity={dark ? 160 : 60} color="#8AA6CF" distance={40} />
+      <pointLight position={[15, 12, 0]} intensity={dark ? 160 : 60} color="#FE4B1E" distance={40} />
 
       {/* floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 4]} material={dark ? floorMat : floorMatLight} onPointerDown={() => onSelect(null)}>
         <planeGeometry args={[90, 64]} />
       </mesh>
-      <gridHelper args={[90, 45, dark ? '#2A2F36' : '#C9C5BB', dark ? '#1B1F24' : '#E0DDD5']} position={[0, 0.005, 4]} />
+      <gridHelper args={[90, 45, dark ? '#38393C' : '#CFCCC7', dark ? '#27282B' : '#E3E1DE']} position={[0, 0.005, 4]} />
 
       {/* hall outlines + aisle markings */}
       {halls.map((h, i) => {
@@ -116,7 +116,7 @@ export default function Factory({ w, ms, opts, selected, onSelect, hover, setHov
             ))}
             <lineSegments position={[0, 0.01, 0]}>
               <edgesGeometry args={[new THREE.BoxGeometry(hallW, 0.01, 30)]} />
-              <lineBasicMaterial color={dark ? '#3A4048' : '#B5B0A5'} />
+              <lineBasicMaterial color={dark ? '#4A4744' : '#B8B4AD'} />
             </lineSegments>
             {opts.labels && (
               <Html position={[-hallW / 2 + 1, 0.1, -15.5]} center={false} zIndexRange={[5, 0]} style={{ pointerEvents: 'none' }}>
@@ -188,9 +188,9 @@ export default function Factory({ w, ms, opts, selected, onSelect, hover, setHov
             {(opts.labels || m.state === 'DOWN') && (
               <Html position={[0, m.state === 'DOWN' ? 5.6 : 4.6, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
                 {m.state === 'DOWN' ? (
-                  <div className="flex animate-pulse flex-col items-center rounded-md border border-[#FF5A47] bg-[#2a0d0a]/90 px-2 py-1 text-center shadow-[0_0_24px_rgba(255,90,71,0.6)]">
+                  <div className="flex animate-pulse flex-col items-center whitespace-nowrap rounded-md border border-[#E0826B] bg-[#3A1E18]/90 px-2 py-1 text-center shadow-[0_0_24px_rgba(255,90,71,0.6)]">
                     <span className="num text-[13px] font-bold text-white">{m.code}</span>
-                    <span className="num text-[16px] font-bold text-[#FF6A5A]">{timer(w.t - m.since)}</span>
+                    <span className="num text-[16px] font-bold text-[#E0826B]">{timer(w.t - m.since)}</span>
                   </div>
                 ) : (
                   <span className="num whitespace-nowrap rounded bg-black/55 px-1.5 py-0.5 text-[11px] font-semibold text-white" style={{ borderBottom: `2px solid ${STATUS_HEX[m.state]}` }}>
@@ -208,7 +208,7 @@ export default function Factory({ w, ms, opts, selected, onSelect, hover, setHov
                   </div>
                   <div className="truncate text-fg3">{w.part[w.mould[m.mouldId]?.positions[0].partId ?? '']?.name} · {m.mouldId}</div>
                   <div className="mt-1 flex justify-between"><span className="text-fg3">Parts</span><span className="num font-semibold">{fmt(k.good)} / {fmt(k.target)}</span></div>
-                  <div className="flex justify-between"><span className="text-fg3">Cycle</span><span className="num font-semibold" style={{ color: m.cycleFactor > 1.05 ? '#FF6A5A' : undefined }}>{k.ct.toFixed(1)} s / {k.std.toFixed(1)} s</span></div>
+                  <div className="flex justify-between"><span className="text-fg3">Cycle</span><span className="num font-semibold" style={{ color: m.cycleFactor > 1.05 ? '#E0826B' : undefined }}>{k.ct.toFixed(1)} s / {k.std.toFixed(1)} s</span></div>
                   <div className="flex justify-between"><span className="text-fg3">OEE</span><span className="num font-semibold">{k.oee.toFixed(0)}%</span></div>
                   <div className="mt-1 text-[10px] text-brand">Click to fly in</div>
                 </div>
@@ -229,7 +229,7 @@ export default function Factory({ w, ms, opts, selected, onSelect, hover, setHov
           </mesh>
           {opts.labels && (
             <Html position={[-20, 4.8, 0]} center style={{ pointerEvents: 'none' }}>
-              <span className="num whitespace-nowrap rounded bg-[#FFE14D] px-1.5 text-[11px] font-bold text-[#15171A]">GATE · {unitTrucks.length} inside</span>
+              <span className="num whitespace-nowrap rounded bg-[#F4E3A1] px-1.5 text-[11px] font-bold text-[#1F2022]">GATE · {unitTrucks.length} inside</span>
             </Html>
           )}
           {unitTrucks.map((k, i) => (
@@ -272,7 +272,7 @@ function Truck3D({ x, waiting, plate, calm, labels }: { x: number; waiting: numb
   useFrame(({ clock }) => {
     if (g.current && !calm) g.current.position.y = Math.sin(clock.elapsedTime * 3 + x) * 0.02;
   });
-  const c = waiting > 60 ? '#FF5A47' : waiting > 30 ? '#FFC233' : '#34C77B';
+  const c = waiting > 60 ? '#E0826B' : waiting > 30 ? '#D6B56E' : '#7DB08F';
   return (
     <group ref={g} position={[x, 0, 6]}>
       <mesh position={[0, 1.6, 0]} material={truckMat}>

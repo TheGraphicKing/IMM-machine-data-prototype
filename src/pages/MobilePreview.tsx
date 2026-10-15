@@ -44,9 +44,9 @@ export function CEOApp() {
   const steps = [
     ['Value at std', a.capValue, 'rgb(var(--fg2))'],
     ['Downtime', -(a.downtime + a.idle), 'rgb(var(--down))'],
-    ['Mould change', -a.mouldChange, '#A855F7'],
+    ['Mould change', -a.mouldChange, '#8C7DB5'],
     ['Speed', -a.speed, 'rgb(var(--idle))'],
-    ['Rejects', -a.rejects, '#DB2777'],
+    ['Rejects', -a.rejects, '#A86A84'],
     ['Actual', a.actual, 'rgb(var(--run))'],
   ] as const;
   let x = 0;
@@ -57,10 +57,10 @@ export function CEOApp() {
           <motion.div key={tab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25, ease: EASE }} className="flex flex-col gap-3 p-4">
             {tab === 0 && (
               <>
-                <div className="rounded-[16px] bg-[#111316] p-4 text-white">
-                  <div className="text-[10px] font-semibold tracking-[0.1em] text-[#8A9099]">LOST TODAY · TO {clock(w.t)}</div>
-                  <div className="num text-[40px] font-bold leading-[44px] text-[#FF8A7A]">{inr(a.lost)}</div>
-                  <div className="text-[12px] text-[#8A9099]">
+                <div className="rounded-[16px] bg-panel p-4 text-fg">
+                  <div className="text-[10px] font-semibold tracking-[0.1em] text-fg3">LOST TODAY · TO {clock(w.t)}</div>
+                  <div className="num text-[40px] font-bold leading-[44px] text-down-t">{inr(a.lost)}</div>
+                  <div className="text-[12px] text-fg3">
                     {pct((a.lost / a.capValue) * 100)} of value · {a.lost > M.yday ? `${inr(a.lost - M.yday)} more` : `${inr(M.yday - a.lost)} less`} than yesterday · MTD {inr(M.mtd)}
                   </div>
                 </div>

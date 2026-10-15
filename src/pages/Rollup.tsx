@@ -11,7 +11,7 @@ import { EASE, LiveDot, PlanChip, Segmented, StateMix, StatePill, planText } fro
 import { notify } from '../shell/Toasts';
 
 type Metric = 'plan' | 'oee' | 'rej' | 'down' | 'mc';
-const statusHex = (v: 'run' | 'idle' | 'down') => ({ run: '#34C77B', idle: '#FFC233', down: '#FF5A47' })[v];
+const statusHex = (v: 'run' | 'idle' | 'down') => ({ run: '#7DB08F', idle: '#D6B56E', down: '#E0826B' })[v];
 
 export default function Rollup() {
   const w = useWorld();
@@ -107,36 +107,36 @@ export default function Rollup() {
       {/* preview */}
       <AnimatePresence>
         {s && (
-          <motion.aside initial={{ x: 380, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 380, opacity: 0 }} transition={{ duration: 0.4, ease: EASE }} className="absolute bottom-4 right-4 top-20 z-30 flex w-[360px] flex-col gap-3 overflow-y-auto rounded-[14px] border border-[#2A2F36] bg-[#111316]/95 p-4 text-white shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur">
+          <motion.aside initial={{ x: 380, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 380, opacity: 0 }} transition={{ duration: 0.4, ease: EASE }} className="absolute bottom-4 right-4 top-20 z-30 flex w-[360px] flex-col gap-3 overflow-y-auto rounded-[14px] border border-line bg-panel/95 p-4 text-fg shadow-[var(--shadow)] backdrop-blur">
             <div className="flex items-start justify-between">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#8A9099]">{w.org[s.u.orgId].name} · {s.u.city}</div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg3">{w.org[s.u.orgId].name} · {s.u.city}</div>
                 <div className="num text-[26px] font-bold">{s.u.name}</div>
               </div>
-              <button onClick={() => setSel(null)} className="text-[#8A9099] hover:text-white" aria-label="Close">✕</button>
+              <button onClick={() => setSel(null)} className="text-fg3 hover:text-fg" aria-label="Close">✕</button>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
                 ['Plan', pct(s.d.plan), planText(s.d.plan)],
                 ['OEE', pct(s.d.oee), '#fff'],
-                ['Reject', pct(s.d.rej), s.d.rej > 3 ? '#FF6A5A' : '#fff'],
+                ['Reject', pct(s.d.rej), s.d.rej > 3 ? 'rgb(var(--down-t))' : 'rgb(var(--fg))'],
               ].map(([l, v, c]) => (
-                <div key={l} className="rounded-[8px] bg-[#1B1F24] p-2.5">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8A9099]">{l}</div>
+                <div key={l} className="rounded-[8px] bg-panel2 p-2.5">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-fg3">{l}</div>
                   <div className="num text-[22px] font-bold" style={{ color: c }}>{v}</div>
                 </div>
               ))}
             </div>
-            <div className="text-[12px] text-[#C9CDD3]">
+            <div className="text-[12px] text-fg2">
               Mould changes {s.a.mcDone} / {s.a.mcDone + s.a.mc + 2} · avg change 36 min vs 30 std
             </div>
             <StateMix run={s.a.run} idle={s.a.idle} mc={s.a.mc} down={s.a.down} off={s.a.off} h={8} />
-            <div className="text-[12px] text-[#8A9099]">{s.a.run} running · {s.a.idle} idle · {s.a.mc} mould change · {s.a.down} down</div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8A9099]">Stopped now</div>
+            <div className="text-[12px] text-fg3">{s.a.run} running · {s.a.idle} idle · {s.a.mc} mould change · {s.a.down} down</div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-fg3">Stopped now</div>
             {machinesOfUnit(w, s.u)
               .filter((m) => m.state === 'DOWN' || m.state === 'IDLE')
               .map((m) => (
-                <button key={m.id} onClick={() => nav(`/machine/${m.id}`)} className="flex items-center justify-between rounded-[8px] bg-[#1B1F24] px-2.5 py-2 text-left text-[12px] hover:bg-[#22262C]">
+                <button key={m.id} onClick={() => nav(`/machine/${m.id}`)} className="flex items-center justify-between rounded-[8px] bg-panel2 px-2.5 py-2 text-left text-[12px] hover:bg-panel3">
                   <span>
                     <b className="num text-[14px]">{m.code}</b> · {m.reasonLogged ? m.reason : 'no reason logged'}
                   </span>
@@ -146,10 +146,10 @@ export default function Rollup() {
             <div className="mt-auto flex flex-col gap-2">
               <button className="btn btn-primary !bg-brand !text-ink" onClick={() => nav(`/unit/${s.u.id}`)}>Open unit dashboard <ArrowRight size={14} /></button>
               <div className="grid grid-cols-2 gap-2">
-                <button className="btn !border !border-[#2A2F36] !text-white hover:!border-[#8A9099]" onClick={() => nav(`/twin/${s.u.id}`)}><Layers3 size={14} />Digital twin</button>
-                <button className="btn !border !border-[#2A2F36] !text-white hover:!border-[#8A9099]" onClick={() => notify({ tone: 'run', title: `Sent to shopfloor TV`, body: `${s.u.name} · Hall A display · within 15 s` })}><MonitorPlay size={14} />Send to TV</button>
+                <button className="btn !border !border-line !text-fg hover:!border-line2" onClick={() => nav(`/twin/${s.u.id}`)}><Layers3 size={14} />Digital twin</button>
+                <button className="btn !border !border-line !text-fg hover:!border-line2" onClick={() => notify({ tone: 'run', title: `Sent to shopfloor TV`, body: `${s.u.name} · Hall A display · within 15 s` })}><MonitorPlay size={14} />Send to TV</button>
               </div>
-              <div className="text-[11px] text-[#6A7079]">Down for {dur(w.t - Math.min(...machinesOfUnit(w, s.u).filter((m) => m.state === 'DOWN').map((m) => m.since), w.t))} longest · data live</div>
+              <div className="text-[11px] text-fg4">Down for {dur(w.t - Math.min(...machinesOfUnit(w, s.u).filter((m) => m.state === 'DOWN').map((m) => m.since), w.t))} longest · data live</div>
             </div>
           </motion.aside>
         )}

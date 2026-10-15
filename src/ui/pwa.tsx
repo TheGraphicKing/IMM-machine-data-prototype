@@ -42,7 +42,7 @@ export function TabBar({ items, active, onTab }: { items: { l: string; icon: typ
 }
 
 function PatternChip({ tk }: { tk: Ticket }) {
-  const c = tk.team ? TEAMS[tk.team].color : '#D8382B';
+  const c = tk.team ? TEAMS[tk.team].color : '#B9533F';
   const cls = tk.stage === 'unassigned' ? 'pat-unassigned' : tk.stage === 'assigned' ? 'pat-assigned' : tk.stage === 'spare' ? 'pat-spare' : tk.stage === 'verify' ? 'pat-verify' : 'pat-working';
   return <span className={cx('h-full w-1.5 shrink-0 rounded-l-[10px]', cls)} style={{ ['--team' as string]: c }} />;
 }

@@ -50,17 +50,17 @@ export default function IntroScene({ calm }: { calm: boolean }) {
     <>
       <ambientLight intensity={0.45} />
       <directionalLight position={[20, 30, 15]} intensity={1.6} />
-      <pointLight position={[-18, 10, 0]} intensity={220} color="#5B8DFF" distance={50} />
-      <pointLight position={[18, 10, 0]} intensity={200} color="#F26A21" distance={50} />
+      <pointLight position={[-18, 10, 0]} intensity={220} color="#8AA6CF" distance={50} />
+      <pointLight position={[18, 10, 0]} intensity={200} color="#FE4B1E" distance={50} />
       <mesh ref={floor} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
         <planeGeometry args={[120, 120]} />
-        <meshStandardMaterial color="#0E1013" roughness={0.9} transparent />
+        <meshStandardMaterial color="#1A1B1D" roughness={0.9} transparent />
       </mesh>
-      <gridHelper args={[120, 60, '#2A2F36', '#16191D']} />
+      <gridHelper args={[120, 60, '#38393C', '#1C1D1F']} />
       {positions.map((p, i) => (
         <group key={i} position={p}>
           <lineSegments ref={(el) => (wires.current[i] = el)} geometry={edgeGeo}>
-            <lineBasicMaterial color="#5B8DFF" transparent opacity={0.9} toneMapped={false} />
+            <lineBasicMaterial color="#8AA6CF" transparent opacity={0.9} toneMapped={false} />
           </lineSegments>
           <group ref={(el) => (groups.current[i] = el)} rotation={[0, i < 6 ? 0 : Math.PI, 0]} visible={false}>
             <IMM state={STATES[i]} cycle={24 + i} tonnage={250 + (i % 3) * 150} seed={i} calm={calm} />
@@ -68,7 +68,7 @@ export default function IntroScene({ calm }: { calm: boolean }) {
         </group>
       ))}
       <Conveyor />
-      {!calm && <Sparkles count={140} scale={[70, 18, 40]} size={2.4} speed={0.35} opacity={0.5} color="#C9CDD3" />}
+      {!calm && <Sparkles count={140} scale={[70, 18, 40]} size={2.4} speed={0.35} opacity={0.5} color="#CFCCC7" />}
     </>
   );
 }
@@ -82,13 +82,13 @@ function Conveyor() {
     <group>
       <mesh position={[0, 0.4, 0]}>
         <boxGeometry args={[40, 0.15, 1.1]} />
-        <meshStandardMaterial color="#22262C" metalness={0.5} />
+        <meshStandardMaterial color="#2E2F32" metalness={0.5} />
       </mesh>
       <group ref={ref}>
         {Array.from({ length: 8 }).map((_, i) => (
           <mesh key={i} position={[0, 0.75, 0]}>
             <boxGeometry args={[0.8, 0.5, 0.8]} />
-            <meshStandardMaterial color="#B98A4E" emissive="#F26A21" emissiveIntensity={0.15} />
+            <meshStandardMaterial color="#A8865A" emissive="#FE4B1E" emissiveIntensity={0.15} />
           </mesh>
         ))}
       </group>

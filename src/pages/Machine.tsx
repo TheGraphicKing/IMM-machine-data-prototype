@@ -284,7 +284,7 @@ function Production({ m, onLog }: { m: M; onLog: () => void }) {
             <tbody>
               <AnimatePresence initial={false}>
                 {parts.map((p) => (
-                  <motion.tr key={p.serial} layout initial={{ opacity: 0, backgroundColor: 'rgba(242,106,33,0.15)' }} animate={{ opacity: 1, backgroundColor: 'rgba(0,0,0,0)' }} className="border-t border-line/50">
+                  <motion.tr key={p.serial} layout initial={{ opacity: 0, backgroundColor: 'rgba(254,75,30,0.15)' }} animate={{ opacity: 1, backgroundColor: 'rgba(0,0,0,0)' }} className="border-t border-line/50">
                     <td className="py-1.5 font-mono text-[12px]">{p.serial}</td>
                     <td className="num py-1.5">{clock(p.t, true)}</td>
                     <td className="num py-1.5 text-right" style={{ color: Math.abs(p.weight - p.nominal) > p.tol ? 'rgb(var(--down-t))' : undefined }}>

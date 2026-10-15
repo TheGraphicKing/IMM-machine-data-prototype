@@ -13,23 +13,23 @@ export const shiftStartOf = (t: number) => Math.floor(t / SHIFT_LEN) * SHIFT_LEN
 export const SHIFT_WINDOWS = { A: '06:00–14:00', B: '14:00–22:00', C: '22:00–06:00' } as const;
 
 export const TEAMS: Record<TeamId, { label: string; color: string; short: string }> = {
-  maintenance: { label: 'Maintenance', color: '#F97316', short: 'MAINT' },
-  toolroom: { label: 'Tool room', color: '#3B82F6', short: 'TOOL' },
-  mouldchange: { label: 'Mould change', color: '#A855F7', short: 'MC' },
-  store: { label: 'Material store', color: '#0F9D8F', short: 'STORE' },
-  quality: { label: 'Quality', color: '#DB2777', short: 'QA' },
-  utilities: { label: 'Utilities', color: '#8B5E34', short: 'UTIL' },
-  planning: { label: 'Planning · no job', color: '#6B7079', short: 'PPC' },
-  production: { label: 'Production · no operator', color: '#E5B000', short: 'PROD' },
+  maintenance: { label: 'Maintenance', color: '#C47A55', short: 'MAINT' },
+  toolroom: { label: 'Tool room', color: '#4A6E9E', short: 'TOOL' },
+  mouldchange: { label: 'Mould change', color: '#8C7DB5', short: 'MC' },
+  store: { label: 'Material store', color: '#4F8C82', short: 'STORE' },
+  quality: { label: 'Quality', color: '#A86A84', short: 'QA' },
+  utilities: { label: 'Utilities', color: '#94806A', short: 'UTIL' },
+  planning: { label: 'Planning · no job', color: '#6B675F', short: 'PPC' },
+  production: { label: 'Production · no operator', color: '#B8954A', short: 'PROD' },
 };
 export const TICKET_TEAMS: TeamId[] = ['maintenance', 'toolroom', 'mouldchange', 'store', 'quality', 'utilities', 'planning'];
 
 export const STATE_META: Record<MState, { label: string; v: string; hexDark: string; hexLight: string }> = {
-  RUN: { label: 'Running', v: 'run', hexDark: '#34C77B', hexLight: '#1E9E57' },
-  IDLE: { label: 'Idle', v: 'idle', hexDark: '#FFC233', hexLight: '#E5B000' },
-  MC: { label: 'Mould change', v: 'mould', hexDark: '#5B8DFF', hexLight: '#2F6FEB' },
-  DOWN: { label: 'Down', v: 'down', hexDark: '#FF5A47', hexLight: '#D8382B' },
-  OFF: { label: 'Offline', v: 'off', hexDark: '#4A4F57', hexLight: '#9AA0A8' },
+  RUN: { label: 'Running', v: 'run', hexDark: '#7DB08F', hexLight: '#4E8A68' },
+  IDLE: { label: 'Idle', v: 'idle', hexDark: '#D6B56E', hexLight: '#B8954A' },
+  MC: { label: 'Mould change', v: 'mould', hexDark: '#8AA6CF', hexLight: '#4A6E9E' },
+  DOWN: { label: 'Down', v: 'down', hexDark: '#E0826B', hexLight: '#B9533F' },
+  OFF: { label: 'Offline', v: 'off', hexDark: '#4A4744', hexLight: '#A8A298' },
 };
 
 export const STAGE_META: Record<Stage, { label: string; short: string }> = {

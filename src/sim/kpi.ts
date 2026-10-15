@@ -206,12 +206,12 @@ export const OWNER_META: Record<string, { label: string; color: string }> = {
   maintenance: { label: 'Maintenance', color: TEAMS.maintenance.color },
   quality: { label: 'Quality / rejects', color: TEAMS.quality.color },
   toolroom: { label: 'Tool room', color: TEAMS.toolroom.color },
-  unassigned: { label: 'Not assigned', color: '#D8382B' },
+  unassigned: { label: 'Not assigned', color: '#B9533F' },
   store: { label: 'Material store', color: TEAMS.store.color },
-  speed: { label: 'Process / speed', color: '#E5B000' },
+  speed: { label: 'Process / speed', color: '#B8954A' },
   utilities: { label: 'Utilities', color: TEAMS.utilities.color },
   mouldchange: { label: 'Mould change', color: TEAMS.mouldchange.color },
-  production: { label: 'Production · no operator', color: '#9AA0A8' },
+  production: { label: 'Production · no operator', color: '#A8A298' },
   planning: { label: 'Planning · no job', color: TEAMS.planning.color },
 };
 

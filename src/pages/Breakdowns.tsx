@@ -107,7 +107,7 @@ export default function Breakdowns() {
                 className={cx('glass flex min-h-[420px] flex-col gap-2.5 !rounded-[12px] p-3 transition', over === c.stage && '!border-brand ring-2 ring-brand/30')}
               >
                 <div className="flex items-center gap-2 px-1">
-                  <span className={cx('h-3 w-6 rounded-[2px]', c.cls)} style={{ ['--team' as string]: '#F97316' }} />
+                  <span className={cx('h-3 w-6 rounded-[2px]', c.cls)} style={{ ['--team' as string]: '#C47A55' }} />
                   <span className="num text-[16px] font-semibold">{STAGE_META[c.stage].label}</span>
                   <span className="num ml-auto rounded-full bg-panel3 px-2 text-[12px] font-semibold">{cards.length}</span>
                 </div>
@@ -164,7 +164,7 @@ function TicketCard({ tk, onDrag, onOpen }: { tk: Ticket; onDrag: (id: string | 
   const downSec = (tk.stage === 'verify' ? tk.stageAt : w.t) - tk.createdAt;
   const rupees = (downSec / k.std) * k.cavTotal * valuePerPart(w, m, basis);
   const sla = tk.stage === 'unassigned' && w.t - tk.createdAt > 600;
-  const c = tk.team ? TEAMS[tk.team].color : '#D8382B';
+  const c = tk.team ? TEAMS[tk.team].color : '#B9533F';
   return (
     <motion.div
       layout

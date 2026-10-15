@@ -16,7 +16,7 @@ export function HourlyBars({ out, planH, labels, current, frac, height = 200 }: 
         {[0.25, 0.5, 0.75].map((g) => (
           <div key={g} className="absolute inset-x-0 border-t border-line/50" style={{ top: `${g * 100}%` }} />
         ))}
-        <div className="absolute inset-x-0 z-[2] border-t-2 border-dashed border-fg3/70" style={{ top: `${planY}%` }}>
+        <div className="absolute inset-x-0 z-[2] border-t border-dashed border-brand" style={{ top: `${planY}%` }}>
           <span className="num absolute -top-5 right-0 rounded bg-panel px-1.5 text-[11px] font-semibold text-fg2">Plan {fmt(planH)} / h</span>
         </div>
         <div className="absolute inset-0 flex items-end gap-2 px-1">
@@ -29,14 +29,14 @@ export function HourlyBars({ out, planH, labels, current, frac, height = 200 }: 
             return (
               <div key={i} className="relative flex h-full flex-1 flex-col justify-end" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
                 {future ? (
-                  <div className="h-[78%] rounded-t-[3px] border border-dashed border-line2" />
+                  <div className="h-[78%] rounded-t-[6px] border border-dashed border-line" />
                 ) : (
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${h}%` }}
                     transition={{ duration: 0.7, delay: i * 0.05, ease: EASE }}
-                    className={cx('relative rounded-t-[3px]', isCur && 'opacity-70')}
-                    style={{ background: low && !isCur ? 'rgb(var(--down))' : isCur ? 'rgb(var(--fg3))' : 'rgb(var(--fg2))' }}
+                    className="relative rounded-t-[6px]"
+                    style={{ background: isCur ? 'repeating-linear-gradient(135deg, rgb(var(--fg) / 0.16) 0 4px, rgb(var(--fg) / 0.05) 4px 8px)' : low ? 'linear-gradient(180deg, rgb(var(--down) / 0.42), rgb(var(--down) / 0.18))' : 'linear-gradient(180deg, rgb(var(--fg) / 0.2), rgb(var(--fg) / 0.08))', boxShadow: isCur ? undefined : low ? 'inset 0 2px 0 rgb(var(--down))' : 'inset 0 2px 0 rgb(var(--fg) / 0.75)' }}
                   >
                     <span className="num absolute -top-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-semibold" style={{ color: low && !isCur ? 'rgb(var(--down-t))' : 'rgb(var(--fg))' }}>
                       {fmt(v)}
@@ -80,22 +80,25 @@ export function Pareto({ rows, unit = 'min', max: maxIn, onRow }: { rows: Pareto
   return (
     <div className="flex flex-col gap-2.5">
       {rows.map((r, i) => {
-        const c = r.team === 'unassigned' ? '#D8382B' : TEAMS[r.team]?.color ?? '#6B7079';
+        const c = r.team === 'unassigned' ? '#B9533F' : TEAMS[r.team]?.color ?? '#6B675F';
         return (
           <button key={r.label} className="group flex flex-col gap-1 text-left" onClick={() => onRow?.(r)}>
             <div className="flex items-baseline justify-between gap-2 text-[13px]">
-              <span className={cx('truncate', r.team === 'unassigned' && 'font-semibold text-down-t')}>{r.label}</span>
+              <span className={cx('flex min-w-0 items-center gap-2', r.team === 'unassigned' && 'text-down-t')}>
+                <span className={cx('h-2 w-2 shrink-0 rounded-full', r.team === 'unassigned' && 'pat-unassigned')} style={{ background: r.team === 'unassigned' ? undefined : c }} />
+                <span className="truncate">{r.label}</span>
+              </span>
               <span className="num shrink-0 font-semibold">
                 {Math.round(r.value)} {unit} <span className="text-fg3">· {Math.round((r.value / total) * 100)}%</span>
               </span>
             </div>
-            <div className="h-2.5 overflow-hidden rounded-[2px] bg-line/50">
+            <div className="h-1.5 overflow-hidden rounded-full bg-line/60">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(r.value / max) * 100}%` }}
                 transition={{ duration: 0.6, delay: i * 0.05, ease: EASE }}
-                className={cx('h-full rounded-[2px]', r.team === 'unassigned' && 'pat-unassigned')}
-                style={{ background: r.team === 'unassigned' ? undefined : c }}
+                className={cx('h-full rounded-full', r.team === 'unassigned' && 'pat-unassigned')}
+                style={{ background: r.team === 'unassigned' ? undefined : i === 0 ? 'rgb(var(--fg) / 0.8)' : 'rgb(var(--fg) / 0.32)' }}
               />
             </div>
             {r.sub && <div className="text-[11px] text-fg3">{r.sub}</div>}

@@ -392,7 +392,7 @@ function StepPromote({ item, onPromote, onBack }: { item: HeldIngest; onPromote:
             dots.map((_, i) => (
               <motion.span
                 key={i}
-                className="absolute left-0 top-1/2 h-2.5 w-2.5 rounded-full bg-brand shadow-[0_0_12px_#F26A21]"
+                className="absolute left-0 top-1/2 h-2.5 w-2.5 rounded-full bg-brand shadow-[0_0_12px_#FE4B1E]"
                 initial={{ x: 0, y: (i % 5) * 6 - 12, opacity: 0, scale: 0.6 }}
                 animate={{ x: ['0%', '100%'], opacity: [0, 1, 1, 0], scale: [0.6, 1.2, 0.8] }}
                 style={{ left: 0 }}

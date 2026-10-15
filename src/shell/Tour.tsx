@@ -78,25 +78,25 @@ export default function Tour() {
     <AnimatePresence>
       {on && (
         <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }} transition={{ duration: 0.4, ease: EASE }} className="fixed bottom-5 left-1/2 z-[120] w-[min(720px,calc(100vw-24px))] -translate-x-1/2" role="status" aria-live="polite">
-          <div className="overflow-hidden rounded-[16px] border border-white/10 bg-[#111316]/92 text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+          <div className="overflow-hidden rounded-[16px] border border-white/10 bg-[#1F2022]/92 text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)] backdrop-blur-xl">
             <div className="flex items-start gap-4 p-4">
-              <div className="num grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#F26A21] text-[16px] font-bold text-[#15171A]">{idx + 1}</div>
+              <div className="num grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#FE4B1E] text-[16px] font-bold text-[#1F2022]">{idx + 1}</div>
               <div className="min-w-0 flex-1">
                 <AnimatePresence mode="wait">
                   <motion.div key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3, ease: EASE }}>
                     <div className="num text-[22px] font-bold leading-7">{step.title}</div>
-                    <div className="text-[14px] leading-5 text-[#C9CDD3]">{step.body}</div>
+                    <div className="text-[14px] leading-5 text-[#CFCCC7]">{step.body}</div>
                   </motion.div>
                 </AnimatePresence>
               </div>
               <div className="flex shrink-0 gap-1">
-                <button className="grid h-8 w-8 place-items-center rounded-md text-[#C9CDD3] hover:bg-white/10" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Resume tour' : 'Pause tour'}>
+                <button className="grid h-8 w-8 place-items-center rounded-md text-[#CFCCC7] hover:bg-white/10" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Resume tour' : 'Pause tour'}>
                   {paused ? <Play size={15} /> : <Pause size={15} />}
                 </button>
-                <button className="grid h-8 w-8 place-items-center rounded-md text-[#C9CDD3] hover:bg-white/10" onClick={skip} aria-label="Next step">
+                <button className="grid h-8 w-8 place-items-center rounded-md text-[#CFCCC7] hover:bg-white/10" onClick={skip} aria-label="Next step">
                   <SkipForward size={15} />
                 </button>
-                <button className="grid h-8 w-8 place-items-center rounded-md text-[#C9CDD3] hover:bg-white/10" onClick={() => set({ tourOn: false })} aria-label="Exit tour">
+                <button className="grid h-8 w-8 place-items-center rounded-md text-[#CFCCC7] hover:bg-white/10" onClick={() => set({ tourOn: false })} aria-label="Exit tour">
                   <X size={15} />
                 </button>
               </div>
@@ -107,7 +107,7 @@ export default function Tour() {
                 const k = Math.max(0, Math.min(1, (t - s.at) / (end - s.at)));
                 return (
                   <div key={i} className="relative flex-1 bg-white/10">
-                    <div className="absolute inset-y-0 left-0 bg-[#F26A21]" style={{ width: `${k * 100}%` }} />
+                    <div className="absolute inset-y-0 left-0 bg-[#FE4B1E]" style={{ width: `${k * 100}%` }} />
                   </div>
                 );
               })}

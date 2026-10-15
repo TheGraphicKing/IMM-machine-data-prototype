@@ -98,8 +98,8 @@ function PowerFlow({ w, kw, util }: { w: ReturnType<typeof useWorld>; kw: number
       <svg viewBox="0 0 600 280" className="absolute inset-0 h-full w-full">
         <defs>
           <linearGradient id="flow" x1="0" x2="1">
-            <stop offset="0" stopColor="#F26A21" stopOpacity="0.2" />
-            <stop offset="1" stopColor="#F26A21" stopOpacity="0.9" />
+            <stop offset="0" stopColor="#FE4B1E" stopOpacity="0.2" />
+            <stop offset="1" stopColor="#FE4B1E" stopOpacity="0.9" />
           </linearGradient>
         </defs>
         <path d="M 70 140 L 210 140" stroke="url(#flow)" strokeWidth={Math.max(3, total / 60)} fill="none" />
@@ -110,7 +110,7 @@ function PowerFlow({ w, kw, util }: { w: ReturnType<typeof useWorld>; kw: number
           return (
             <g key={n.l}>
               <path d={d} stroke="rgb(var(--line2))" strokeWidth={Math.max(2, n.kw / 25)} fill="none" opacity={0.7} />
-              <path d={d} stroke="#F26A21" strokeWidth={2} fill="none" strokeDasharray="3 14" className="[animation:dash_1s_linear_infinite]" />
+              <path d={d} stroke="#FE4B1E" strokeWidth={2} fill="none" strokeDasharray="3 14" className="[animation:dash_1s_linear_infinite]" />
             </g>
           );
         })}

@@ -162,7 +162,7 @@ export default function Records() {
               <tbody>
                 <AnimatePresence initial={false}>
                   {rows.map((r) => (
-                    <motion.tr key={r.serial} layout="position" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25, ease: EASE }} className={cx('row-click', sel?.serial === r.serial && '!bg-brand/10 shadow-[inset_3px_0_0_#F26A21]')} onClick={() => setSel(r)}>
+                    <motion.tr key={r.serial} layout="position" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25, ease: EASE }} className={cx('row-click', sel?.serial === r.serial && '!bg-brand/10 shadow-[inset_3px_0_0_#FE4B1E]')} onClick={() => setSel(r)}>
                       <td className="font-mono text-[12px]">
                         {r.serial} {r.manual && <span className="ml-1 rounded bg-mould/15 px-1 text-[10px] font-semibold text-mould-t">MANUAL</span>}
                       </td>

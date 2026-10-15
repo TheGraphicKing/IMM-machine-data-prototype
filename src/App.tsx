@@ -41,7 +41,7 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.calm = String(calm);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0B0D10' : '#F3F2EE');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#18191B' : '#FAFAF9');
   }, [theme, calm]);
 
   // simulator heartbeat (pauses when the tab is hidden)

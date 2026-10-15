@@ -15,7 +15,7 @@ npm run preview
 npm run deploy         # builds and pushes dist/ to a gh-pages branch
 ```
 
-Stack: Vite + React 18 + TypeScript (strict) + Tailwind, three.js via @react-three/fiber / drei / postprocessing, framer-motion, Zustand, lucide-react, Barlow + Barlow Condensed self-hosted via @fontsource. HashRouter, so static hosts never 404.
+Stack: Vite + React 18 + TypeScript (strict) + Tailwind, three.js via @react-three/fiber / drei / postprocessing, framer-motion, Zustand, lucide-react, Inter + JetBrains Mono self-hosted via @fontsource. HashRouter, so static hosts never 404.
 
 ## Deploy
 
@@ -72,4 +72,6 @@ Stack: Vite + React 18 + TypeScript (strict) + Tailwind, three.js via @react-thr
 
 The simulator (`src/sim`) starts at 06:00, warms up to 11:42 and then ticks every second. Machines change state with seeded probabilities, shots accumulate at the actual cycle, rejects follow per-machine rates, tickets move through stages, trucks arrive and leave. KPIs follow `01_CONTEXT.md §7`: OEE = A × P × Q, roll-ups sum numerators and denominators, plan = standard capacity × 82% (PPC factor), and the ₹ waterfall is value-at-standard − downtime − mould change − speed − rejects = actual, exactly.
 
-Status colours are reserved for status; brand orange is used only for selection, primary actions, the “now” marker and focus.
+## Visual system
+
+Colour and type follow the Lyzr brand system (logos and illustrations not used): warm greyscale from Off-white `#FAFAF9` to Black `#1F2022`, Orange `#FE4B1E` as the single accent (now marker, plan line, active nav, focus), Navy as a supporting data colour. Charts are drawn in ink tints; status hues are muted (sage, ochre, steel, brick) and appear as dots, thin edges and chips rather than large fills. Type: Inter (stand-in for Aeonik, which is licensed) for everything read, JetBrains Mono uppercase for labels and table headers. Light (Off-white) is the default theme; dark uses the Black ramp.

@@ -83,7 +83,7 @@ export default function Topbar({ onMenu }: { onMenu: () => void }) {
           <Bell size={16} />
           <span className="hidden sm:inline">Alerts</span>
           {open.length > 0 && (
-            <motion.span key={open.length} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className={cx('num rounded-full px-1.5 text-[11px] font-semibold text-white', crit ? 'bg-[#D8382B]' : 'bg-[#E5B000] text-ink')}>
+            <motion.span key={open.length} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className={cx('num rounded-full px-1.5 text-[11px] font-semibold text-white', crit ? 'bg-[#B9533F]' : 'bg-[#B8954A] text-ink')}>
               {open.length}
             </motion.span>
           )}

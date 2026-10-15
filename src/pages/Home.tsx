@@ -69,8 +69,8 @@ export default function Home() {
       </div>
 
       {/* dark KPI strip */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE }} className="relative overflow-hidden rounded-[12px] border border-[#2A2F36] bg-[#111316] text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_10%_0%,rgba(242,106,33,0.12),transparent_50%)]" />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE }} className="relative overflow-hidden rounded-[12px] border border-line bg-panel text-fg shadow-[var(--card-shadow)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_0%_0%,rgb(var(--brand)/0.05),transparent_45%)]" />
         <div className="relative grid grid-cols-2 gap-x-6 gap-y-5 p-5 md:grid-cols-3 xl:grid-cols-5">
           <Kpi
             dark
@@ -86,7 +86,7 @@ export default function Home() {
           <Kpi
             dark
             label="Machines down now"
-            value={<span style={{ color: A.down ? '#FF6A5A' : undefined }}>{A.down}</span>}
+            value={<span style={{ color: A.down ? 'rgb(var(--down-t))' : undefined }}>{A.down}</span>}
             unit={<>/ {A.machines}</>}
             sub={<>{unitsDown} units · {A.run} running · {A.mc} mould change</>}
             onClick={() => nav('/breakdowns')}
@@ -94,13 +94,13 @@ export default function Home() {
             <StateMix run={A.run} idle={A.idle} mc={A.mc} down={A.down} off={A.off} h={6} />
           </Kpi>
           {money ? (
-            <Kpi dark label="Lost today · ₹" value={<span className="text-[#FF8A7A]"><Ticker value={money.lost} format={(n) => inr(n)} /></span>} sub={<>{pct((money.lost / money.capValue) * 100)} of value at standard · Money view →</>} onClick={() => nav('/money')} />
+            <Kpi dark label="Lost today · ₹" value={<span className="text-down-t"><Ticker value={money.lost} format={(n) => inr(n)} /></span>} sub={<>{pct((money.lost / money.capValue) * 100)} of value at standard · Money view →</>} onClick={() => nav('/money')} />
           ) : (
             <Kpi dark label="Mould changes" value={A.mcDone} sub="done this shift" />
           )}
         </div>
-        <div className="relative flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-[#23272D] px-5 py-2.5 text-[12px] text-[#8A9099]">
-          <LiveDot label={<span className="text-[#C9CDD3]">Live</span>} />
+        <div className="relative flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-line px-5 py-2.5 text-[12px] text-fg3">
+          <LiveDot label={<span className="text-fg2">Live</span>} />
           {[
             ['run', 'Running'],
             ['idle', 'Idle'],
@@ -215,7 +215,7 @@ function UnitTile({ u, win, i, pinned, onPin }: { u: Unit; win: Win; i: number; 
       tabIndex={0}
       aria-label={`${u.name}, ${pct(d.plan)} of plan`}
       className="glass spotlight group relative cursor-pointer overflow-hidden !rounded-[10px] p-4"
-      style={{ borderTop: `3px solid ${planColor(d.plan)}` }}
+      style={{ boxShadow: `inset 0 2px 0 ${planColor(d.plan)}, var(--card-shadow)` }}
     >
       <div className="flex items-start justify-between gap-2">
         <motion.div layoutId={`unit-title-${u.id}`} className="num truncate text-[18px] font-semibold leading-6">
@@ -238,7 +238,7 @@ function UnitTile({ u, win, i, pinned, onPin }: { u: Unit; win: Win; i: number; 
       </div>
       <div className="mt-2 flex items-end justify-between gap-2">
         <div>
-          <div className="num text-[34px] font-bold leading-9" style={{ color: planText(d.plan) }}>
+          <div className="num text-[34px] font-normal leading-9">
             <Ticker value={d.plan} format={(n) => `${n.toFixed(1)}%`} />
           </div>
           <div className="text-[12px] text-fg3">

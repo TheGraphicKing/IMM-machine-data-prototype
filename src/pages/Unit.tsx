@@ -134,7 +134,7 @@ function Overview({ ms, A, D, need, unitId }: { ms: Machine[]; A: ReturnType<typ
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <div className="flex min-w-0 flex-col gap-4">
-          <Panel title="Hourly output vs plan" sub={<span className="inline-flex flex-wrap gap-x-4"><span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-[2px] bg-fg2" />Actual</span><span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-[2px] bg-down" />Below 90% of plan</span><span>Good parts per shop-floor hour</span></span>}>
+          <Panel title="Hourly output vs plan" sub={<span className="inline-flex flex-wrap gap-x-4"><span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-fg/30" />Actual</span><span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-down/50" />Below 90% of plan</span><span>Good parts per shop-floor hour</span></span>}>
             <HourlyBars out={h.out} planH={h.planH} labels={labels} current={hi} frac={(w.t - s0 - hi * 3600) / 3600} height={220} />
           </Panel>
 

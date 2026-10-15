@@ -42,7 +42,7 @@ export default function Dispatch() {
           ['Over 60 min', over60, 'red limit · alerts dispatch + unit head', 'down'],
           ['Left today', outToday, 'avg turnaround 46 min', 'run'],
         ].map(([l, v, s, tone], i) => (
-          <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4" style={{ borderTop: tone ? `3px solid rgb(var(--${tone}))` : '3px solid #FFE14D' }}>
+          <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4" style={{ borderTop: tone ? `3px solid rgb(var(--${tone}))` : '3px solid #F4E3A1' }}>
             <div className="overline">{l}</div>
             <div className="num mt-1 text-[30px] font-bold">{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>

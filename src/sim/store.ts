@@ -67,7 +67,7 @@ interface SimState {
 const reducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const saved = (() => {
   try {
-    return JSON.parse(localStorage.getItem('immdata.prefs') ?? '{}') as Partial<SimState>;
+    return JSON.parse(localStorage.getItem('immdata.prefs.v2') ?? '{}') as Partial<SimState>;
   } catch {
     return {};
   }
@@ -86,7 +86,7 @@ export const useSim = create<SimState>((set, get) => ({
   version: 0,
   speed: 1,
   paused: false,
-  theme: (saved.theme as 'dark' | 'light') ?? 'dark',
+  theme: (saved.theme as 'dark' | 'light') ?? 'light',
   calm: saved.calm ?? !!reducedMotion,
   sound: false,
   role: 'director',
@@ -115,7 +115,7 @@ export const useSim = create<SimState>((set, get) => ({
     if ('theme' in p || 'calm' in p || 'modules' in p) {
       const { theme, calm, modules } = get();
       try {
-        localStorage.setItem('immdata.prefs', JSON.stringify({ theme, calm, modules }));
+        localStorage.setItem('immdata.prefs.v2', JSON.stringify({ theme, calm, modules }));
       } catch {
         /* storage unavailable */
       }
