@@ -64,7 +64,7 @@ export default function Topbar({ onMenu }: { onMenu: () => void }) {
         </span>
         <span className="hidden h-[18px] w-px bg-line xl:block" />
         <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex" title={`Simulated shop-floor time · Thu, ${w.day} Oct 2026`}>
-          <span className="num text-[15px] font-semibold text-fg">{clock(w.t, true)}</span>
+          <span className="num text-[13.5px] font-semibold text-fg">{clock(w.t, true)}</span>
           <span className="hidden text-fg3 2xl:inline">Thu, {w.day} Oct</span>
           {speed > 1 && <span className="num rounded bg-brand/15 px-1.5 text-[11px] font-semibold text-brand">{speed}×</span>}
         </span>
@@ -110,7 +110,7 @@ export default function Topbar({ onMenu }: { onMenu: () => void }) {
           <AnimatePresence>
             {roleOpen && (
               <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2, ease: EASE }} className="glass-strong absolute right-0 top-11 z-50 w-64 rounded-[10px] p-1.5 shadow-[var(--shadow)]">
-                <div className="overline px-2 py-1.5">View as role</div>
+                <div className="eyebrow px-2 py-1.5">View as role</div>
                 {(Object.keys(ROLES) as RoleId[]).map((r) => (
                   <button key={r} onClick={() => pickRole(r)} className={cx('flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition hover:bg-panel3', r === role && 'bg-brand/10')}>
                     <span className="grid h-7 w-7 place-items-center rounded-full bg-panel3 text-[11px] font-semibold">{ROLES[r].ini}</span>

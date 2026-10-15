@@ -24,9 +24,9 @@ export default function Locked({ mod: modProp }: { mod?: ModuleId }) {
         <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full border border-line2 bg-panel2">
           <Lock size={22} className="text-fg2" />
         </div>
-        <div className="overline mb-1">{meta.code} · add-on module</div>
-        <h1 className="num text-[30px] font-bold leading-9">{meta.name}</h1>
-        <p className="mt-2 text-[15px] text-fg2">{meta.promise}.</p>
+        <div className="eyebrow mb-1">{meta.code} · add-on module</div>
+        <h1 className="num text-[24px] font-bold leading-9">{meta.name}</h1>
+        <p className="mt-2 text-[13.5px] text-fg2">{meta.promise}.</p>
         <p className="mt-3 text-[13px] text-fg3">This module isn’t on Apex Polymers’ plan yet. Turn it on for a 30-day trial or talk to us about the Enterprise bundle.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button

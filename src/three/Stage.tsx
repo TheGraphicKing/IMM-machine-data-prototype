@@ -41,11 +41,11 @@ export default function Stage({
         dpr={[1, 1.75]}
         frameloop={visible && tabVisible ? 'always' : 'never'}
         camera={camera}
-        gl={{ antialias: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping }}
+        gl={{ antialias: true, alpha: bg === 'transparent', powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping }}
         shadows={false}
         {...rest}
       >
-        <color attach="background" args={[background]} />
+        {bg !== 'transparent' && <color attach="background" args={[background]} />}
         <Suspense fallback={null}>{children}</Suspense>
         {bloom && !calm && hero && (
           <EffectComposer multisampling={0}>

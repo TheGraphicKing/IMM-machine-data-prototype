@@ -42,14 +42,14 @@ export default function MouldSetup() {
   const item = items.find((i) => i.id === active);
 
   return (
-    <div className="mx-auto flex max-w-[1400px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1400px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <AnimatePresence mode="wait">
         {!item ? (
           <motion.div key="home" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3, ease: EASE }} className="flex flex-col gap-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <div className="text-[13px] text-fg3">Masters / Mould master</div>
-                <h1 className="num text-[30px] font-bold leading-9">Mould master · setup queue</h1>
+                <h1 className="num text-[24px] font-bold leading-9">Mould master · setup queue</h1>
                 <div className="text-[13px] text-fg3">Fix records in order: Machine → Mould → Part → Mapping → Promote. Every held shot promotes once its record is complete. No shot is ever dropped.</div>
               </div>
               <button
@@ -66,12 +66,12 @@ export default function MouldSetup() {
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
               {counts.map(({ s, n }, i) => (
                 <motion.div key={s} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4" style={{ borderTop: `3px solid rgb(var(--${META[s].v}))` }}>
-                  <div className="num text-[30px] font-bold">{n}</div>
+                  <div className="num text-[24px] font-bold">{n}</div>
                   <div className="text-[12px] font-semibold text-fg2">{META[s].label}</div>
                 </motion.div>
               ))}
               <div className="glass !rounded-[10px] p-4" style={{ borderTop: '3px solid rgb(var(--brand))' }}>
-                <div className="num text-[30px] font-bold">{fmt(held)}</div>
+                <div className="num text-[24px] font-bold">{fmt(held)}</div>
                 <div className="text-[12px] font-semibold text-fg2">Shots held</div>
               </div>
             </div>
@@ -131,7 +131,7 @@ function Wizard({ item, onBack }: { item: HeldIngest; onBack: () => void }) {
         <ArrowLeft size={14} />Back to mould master
       </button>
       <div className="flex flex-wrap items-baseline gap-3">
-        <h1 className="num text-[28px] font-bold">{item.id}</h1>
+        <h1 className="num text-[22px] font-bold">{item.id}</h1>
         <span className="text-[13px] text-fg3">· {fmt(item.heldShots)} shot(s) held</span>
         <span className="rounded-[3px] px-2 py-0.5 text-[11px] font-semibold" style={{ background: `rgb(var(--${META[s].v}) / 0.15)`, color: `rgb(var(--${META[s].v}-t))` }}>{META[s].label}</span>
       </div>
@@ -175,7 +175,7 @@ function StepMachine({ item, onPick }: { item: HeldIngest; onPick: (m: { id: str
         {opts.map((m) => (
           <button key={m.id} onClick={() => setSel(m.id)} className={cx('flex items-center justify-between rounded-[10px] border p-3 text-left transition', sel === m.id ? 'border-brand bg-brand/10' : 'border-line2 hover:border-fg3')}>
             <span>
-              <span className="num block text-[17px] font-semibold">{m.code} · {m.tonnage} T</span>
+              <span className="num block text-[14px] font-semibold">{m.code} · {m.tonnage} T</span>
               <span className="text-[12px] text-fg3">{m.hall} · {m.make} · {m.id}</span>
             </span>
             {sel === m.id && <Check size={16} className="text-brand" />}
@@ -215,7 +215,7 @@ function StepMould({ item, onSave }: { item: HeldIngest; onSave: (m: NonNullable
             ['Mould type', item.mould.type === 'family' ? 'Family mould' : 'Multicavity mould'],
             ['Cavities / positions', item.mould.positions.map((p) => `${p.code} × ${p.qty}`).join(', ')],
           ].map(([l, v]) => (
-            <div key={l}><div className="overline">{l}</div><div className="font-semibold">{v}</div></div>
+            <div key={l}><div className="eyebrow">{l}</div><div className="font-semibold">{v}</div></div>
           ))}
         </div>
         <button className="btn btn-primary mt-4" onClick={() => onSave(item.mould!)}>3. Continue to part →</button>
@@ -223,7 +223,7 @@ function StepMould({ item, onSave }: { item: HeldIngest; onSave: (m: NonNullable
     );
   const field = (k: 'name' | 'serial' | 'partWeight' | 'threshold', l: string, ph: string) => (
     <label className="flex flex-col gap-1">
-      <span className="overline">{l} <span className="text-down-t">*</span></span>
+      <span className="eyebrow">{l} <span className="text-down-t">*</span></span>
       <input className={cx('input', err[k] && '!border-down')} placeholder={ph} value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} />
       {err[k] && <span className="text-[12px] text-down-t">{err[k]}</span>}
     </label>
@@ -236,7 +236,7 @@ function StepMould({ item, onSave }: { item: HeldIngest; onSave: (m: NonNullable
         {field('partWeight', 'Part weight', '0.255 kg')}
         {field('threshold', 'Threshold', '0.02')}
       </div>
-      <div className="mt-4 overline">Mould type *</div>
+      <div className="mt-4 eyebrow">Mould type *</div>
       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
         {([
           ['family', 'Family mould', 'More than one related part is produced in this same mould (e.g. LH / RH / Center).'],
@@ -250,7 +250,7 @@ function StepMould({ item, onSave }: { item: HeldIngest; onSave: (m: NonNullable
       </div>
       {f.type === 'family' ? (
         <div className="mt-4">
-          <div className="overline">Cavity positions * <span className="normal-case tracking-normal text-fg4">(Cavity Position master)</span></div>
+          <div className="eyebrow">Cavity positions * <span className="normal-case tracking-normal text-fg4">(Cavity Position master)</span></div>
           <div className="mt-2 flex flex-wrap gap-2">
             {POS.map((p) => {
               const on = f.positions.find((x) => x.code === p.code);
@@ -274,9 +274,9 @@ function StepMould({ item, onSave }: { item: HeldIngest; onSave: (m: NonNullable
         </div>
       ) : (
         <div className="mt-4 flex items-center gap-3">
-          <span className="overline">Number of cavities *</span>
+          <span className="eyebrow">Number of cavities *</span>
           <button className="grid h-8 w-8 place-items-center rounded-full border border-line2" onClick={() => setF({ ...f, positions: [{ code: 'CAV', qty: Math.max(1, (f.positions[0]?.qty ?? 1) - 1) }] })} aria-label="Less"><Minus size={14} /></button>
-          <span className="num text-[20px] font-bold">{f.positions[0]?.qty ?? 1}</span>
+          <span className="num text-[16px] font-bold">{f.positions[0]?.qty ?? 1}</span>
           <button className="grid h-8 w-8 place-items-center rounded-full border border-line2" onClick={() => setF({ ...f, positions: [{ code: 'CAV', qty: (f.positions[0]?.qty ?? 1) + 1 }] })} aria-label="More"><Plus size={14} /></button>
           <span className="text-[12px] text-fg3">One part number will cover every cavity.</span>
         </div>
@@ -300,10 +300,10 @@ function StepPart({ item, onSave }: { item: HeldIngest; onSave: (p: HeldIngest['
       <div className="flex flex-col gap-3">
         {keys.map((k) => (
           <div key={k} className="grid grid-cols-1 gap-3 rounded-[10px] border border-line/70 p-3 md:grid-cols-[100px_1fr_1fr]">
-            <div className="num self-center text-[18px] font-bold">{k === 'single' ? 'All cavities' : POS.find((p) => p.code === k)?.label ?? k}</div>
+            <div className="num self-center text-[15px] font-bold">{k === 'single' ? 'All cavities' : POS.find((p) => p.code === k)?.label ?? k}</div>
             {(['partNumber', 'partName'] as const).map((fld) => (
               <label key={fld} className="flex flex-col gap-1">
-                <span className="overline">{fld === 'partNumber' ? 'Part number' : 'Part name'} <span className="text-down-t">*</span></span>
+                <span className="eyebrow">{fld === 'partNumber' ? 'Part number' : 'Part name'} <span className="text-down-t">*</span></span>
                 <input className={cx('input', tried && !f[k]?.[fld] && '!border-down')} value={f[k]?.[fld] ?? ''} placeholder={fld === 'partNumber' ? 'OM2-24301L' : 'Bumper end cap LH'} onChange={(e) => setF({ ...f, [k]: { partNumber: f[k]?.partNumber ?? '', partName: f[k]?.partName ?? '', [fld]: e.target.value } })} />
                 {tried && !f[k]?.[fld] && <span className="text-[12px] text-down-t">Required</span>}
               </label>
@@ -377,15 +377,15 @@ function StepPromote({ item, onPromote, onBack }: { item: HeldIngest; onPromote:
           ['Parts mapped', item.mould?.type === 'family' ? item.mould.positions.length : 1],
           ['Shots held', fmt(item.heldShots)],
         ].map(([l, v]) => (
-          <div key={l as string} className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">{l}</div><div className="num text-[18px] font-semibold">{v}</div></div>
+          <div key={l as string} className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">{l}</div><div className="num text-[15px] font-semibold">{v}</div></div>
         ))}
       </div>
       <div className="relative mt-6 flex items-center justify-between gap-6 overflow-hidden rounded-[12px] border border-line/70 p-6">
         <div className="flex flex-col items-center gap-2">
           <div className="grid h-20 w-20 place-items-center rounded-[14px] border border-idle/50 bg-idle/10">
-            <span className="num text-[22px] font-bold text-idle-t">{fmt(Math.max(0, item.heldShots - count))}</span>
+            <span className="num text-[18px] font-bold text-idle-t">{fmt(Math.max(0, item.heldShots - count))}</span>
           </div>
-          <span className="overline">Held queue</span>
+          <span className="eyebrow">Held queue</span>
         </div>
         <div className="relative h-20 flex-1">
           {phase === 'flying' &&
@@ -407,14 +407,14 @@ function StepPromote({ item, onPromote, onBack }: { item: HeldIngest; onPromote:
         </div>
         <div className="flex flex-col items-center gap-2">
           <motion.div animate={phase === 'done' ? { scale: [1, 1.12, 1] } : {}} className="grid h-20 w-20 place-items-center rounded-[14px] border border-run/50 bg-run/10">
-            <span className="num text-[22px] font-bold text-run-t">+{fmt(count)}</span>
+            <span className="num text-[18px] font-bold text-run-t">+{fmt(count)}</span>
           </motion.div>
-          <span className="overline">Production records</span>
+          <span className="eyebrow">Production records</span>
         </div>
       </div>
       <div className="mt-5 flex gap-2">
         {phase !== 'done' ? (
-          <button className="btn btn-primary !h-12 !px-6 !text-[15px]" disabled={phase === 'flying'} onClick={go}>
+          <button className="btn btn-primary !h-12 !px-6 !text-[13.5px]" disabled={phase === 'flying'} onClick={go}>
             <Rocket size={16} />Promote — release {fmt(item.heldShots)} shot(s) →
           </button>
         ) : (

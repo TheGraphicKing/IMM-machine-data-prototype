@@ -19,10 +19,10 @@ export default function Alerts() {
   const [sp, setSp] = useSearchParams();
   const tab = sp.get('tab') === 'rules' ? 'rules' : 'inbox';
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="num text-[30px] font-bold leading-9">{tab === 'inbox' ? 'Alerts' : 'Alert rules'}</h1>
+          <h1 className="num text-[24px] font-bold leading-9">{tab === 'inbox' ? 'Alerts' : 'Alert rules'}</h1>
           <div className="text-[13px] text-fg3">{tab === 'inbox' ? 'Open, acknowledged and resolved alerts with evidence, timeline and actions' : 'One rule per alert type · corporate default, overridable per org or unit'}</div>
         </div>
         <Segmented<'inbox' | 'rules'> options={[{ v: 'inbox', l: 'Inbox' }, { v: 'rules', l: 'Rules (admin)' }]} value={tab} onChange={(v) => setSp(v === 'rules' ? { tab: 'rules' } : {})} />
@@ -121,13 +121,13 @@ function Detail({ a, onLog, onOpen }: { a: Alert; onLog: (id: string) => void; o
   const lost = m && k ? (stoppedFor / k.std) * k.cavTotal : 0;
   const s0 = shiftStartOf(w.t);
   return (
-    <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.3, ease: EASE }} className="glass flex h-fit flex-col gap-4 !rounded-[12px] p-5 xl:sticky xl:top-4">
+    <motion.div data-tour="alert-detail" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.3, ease: EASE }} className="glass flex h-fit flex-col gap-4 !rounded-[12px] p-5 xl:sticky xl:top-4">
       <div className="flex items-center gap-2">
         <span className="rounded-[3px] px-2 py-0.5 text-[11px] font-bold tracking-[0.06em]" style={{ background: `rgb(var(--${SEV[a.severity].v}) / 0.16)`, color: `rgb(var(--${SEV[a.severity].v}-t))` }}>{SEV[a.severity].label}</span>
         <span className="text-[12px] text-fg3">{a.type} · {a.id}</span>
       </div>
       <div>
-        <h2 className="num text-[24px] font-semibold leading-7">{a.title}</h2>
+        <h2 className="num text-[19px] font-semibold leading-7">{a.title}</h2>
         <div className="mt-1 text-[13px] text-fg3">
           {w.org[u.orgId].name} / {u.name}
           {m && ` / ${m.hall} · ${m.make} ${m.tonnage} T`}
@@ -136,22 +136,22 @@ function Detail({ a, onLog, onOpen }: { a: Alert; onLog: (id: string) => void; o
       {m && (
         <div className="grid grid-cols-3 gap-3">
           <div className="rounded-[8px] bg-panel2/70 p-3">
-            <div className="overline">{m.state === 'DOWN' ? 'Stopped' : 'State'}</div>
-            <div className="num text-[24px] font-bold" style={{ color: m.state === 'DOWN' ? 'rgb(var(--down-t))' : 'rgb(var(--run-t))' }}>{m.state === 'DOWN' ? timer(stoppedFor) : 'Running'}</div>
+            <div className="eyebrow">{m.state === 'DOWN' ? 'Stopped' : 'State'}</div>
+            <div className="num text-[19px] font-bold" style={{ color: m.state === 'DOWN' ? 'rgb(var(--down-t))' : 'rgb(var(--run-t))' }}>{m.state === 'DOWN' ? timer(stoppedFor) : 'Running'}</div>
           </div>
           <div className="rounded-[8px] bg-panel2/70 p-3">
-            <div className="overline">Parts lost</div>
-            <div className="num text-[24px] font-bold">≈ {fmt(lost)}</div>
+            <div className="eyebrow">Parts lost</div>
+            <div className="num text-[19px] font-bold">≈ {fmt(lost)}</div>
           </div>
           <div className="rounded-[8px] bg-panel2/70 p-3">
-            <div className="overline">Reason</div>
-            <div className="truncate text-[15px] font-semibold">{m.state === 'DOWN' ? (m.reasonLogged ? m.reason : 'Not logged') : '—'}</div>
+            <div className="eyebrow">Reason</div>
+            <div className="truncate text-[13.5px] font-semibold">{m.state === 'DOWN' ? (m.reasonLogged ? m.reason : 'Not logged') : '—'}</div>
           </div>
         </div>
       )}
       {m && (
         <div>
-          <div className="overline mb-2">Evidence</div>
+          <div className="eyebrow mb-2">Evidence</div>
           {a.type === 'Cycle time drift' || a.type === 'Process param' ? (
             <LineChart data={m.cycleHist.slice(-60).length > 2 ? m.cycleHist.slice(-60) : [k!.std, k!.ct]} height={120} refs={[{ v: k!.std, label: 'std', tone: 'rgb(var(--run-t))' }, { v: k!.std * 1.05, label: '+5%', tone: 'rgb(var(--down-t))' }]} />
           ) : (
@@ -172,7 +172,7 @@ function Detail({ a, onLog, onOpen }: { a: Alert; onLog: (id: string) => void; o
         </div>
       )}
       <div>
-        <div className="overline mb-2">Timeline</div>
+        <div className="eyebrow mb-2">Timeline</div>
         <div className="relative flex flex-col gap-2.5 pl-4">
           <div className="absolute bottom-1 left-[5px] top-1 w-px bg-line" />
           {[...a.timeline, ...(tk ? tk.history.filter((h) => h.t > a.t).map((h) => ({ t: h.t, tone: 'muted' as const, msg: `${h.by}: ${h.note || h.stage}` })) : [])]
@@ -187,7 +187,7 @@ function Detail({ a, onLog, onOpen }: { a: Alert; onLog: (id: string) => void; o
         </div>
       </div>
       <div className="rounded-[8px] border border-line/60 p-3 text-[12px]">
-        <span className="overline">Notified</span>
+        <span className="eyebrow">Notified</span>
         <div className="mt-1 text-fg2">{a.notified}</div>
       </div>
       <div className="flex flex-wrap gap-2">

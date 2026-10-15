@@ -34,11 +34,11 @@ export default function People() {
   const skillOps = emps.filter((e) => e.role !== 'Supervisor').slice(0, 16);
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="text-[13px] text-fg3">Manesar U1 · People & shift</div>
-          <h1 className="num text-[30px] font-bold leading-9">Right people, right skills, every shift</h1>
+          <h1 className="num text-[24px] font-bold leading-9">Right people, right skills, every shift</h1>
           <div className="text-[13px] text-fg3">Who was there, were they enough, were they the right people, and how productive were they</div>
         </div>
         <Segmented<'A' | 'B' | 'C'> options={[{ v: 'A', l: 'Shift A' }, { v: 'B', l: 'Shift B' }, { v: 'C', l: 'Shift C' }]} value={shift} onChange={setShift} />
@@ -60,8 +60,8 @@ export default function People() {
           ['Labour cost / shift', inr(emps.length * 8 * 265), `${inr((emps.length * 8 * 265) / 26000)} per good part`],
         ].map(([l, v, s], i) => (
           <motion.div key={l} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4">
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[26px] font-bold">{v}</div>
+            <div className="eyebrow">{l}</div>
+            <div className="num mt-1 text-[20px] font-bold">{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}

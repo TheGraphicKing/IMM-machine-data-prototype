@@ -70,7 +70,7 @@ export default function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; 
         <div className="relative">
           <button onClick={() => setScopeOpen((v) => !v)} className="flex w-full flex-col gap-1 rounded-md border border-line bg-panel2 px-3 py-2.5 text-left transition hover:border-line2" aria-expanded={scopeOpen}>
             <span className="text-[10px] font-semibold tracking-[0.12em] text-fg3">SCOPE</span>
-            <span className="flex items-center justify-between text-[15px] font-semibold text-fg">
+            <span className="flex items-center justify-between text-[13.5px] font-semibold text-fg">
               {st.title}
               <ChevronDown size={14} className={cx('text-fg3 transition', scopeOpen && 'rotate-180')} />
             </span>

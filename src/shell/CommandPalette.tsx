@@ -95,7 +95,7 @@ export default function CommandPalette() {
                   else if (e.key === 'Escape') set({ paletteOpen: false });
                 }}
                 placeholder="Search units, machines (IMM-07), moulds (M-1420), parts, tickets, vehicles, serials…"
-                className="h-14 flex-1 bg-transparent text-[15px] outline-none placeholder:text-fg4"
+                className="h-14 flex-1 bg-transparent text-[13.5px] outline-none placeholder:text-fg4"
                 aria-label="Search query"
               />
               <kbd className="num rounded border border-line2 px-1.5 text-[11px] text-fg3">ESC</kbd>
@@ -104,7 +104,7 @@ export default function CommandPalette() {
               {results.length === 0 && <div className="px-3 py-8 text-center text-[13px] text-fg3">No match for “{q}”. Try “IMM-07”, “Manesar”, “M-1420” or “HR 55”.</div>}
               {results.map((r, i) => (
                 <div key={r.group + r.label + i}>
-                  {(i === 0 || results[i - 1].group !== r.group) && <div className="overline px-3 pb-1 pt-2">{r.group}</div>}
+                  {(i === 0 || results[i - 1].group !== r.group) && <div className="eyebrow px-3 pb-1 pt-2">{r.group}</div>}
                   <button onMouseEnter={() => setSel(i)} onClick={() => go(r)} className={cx('flex w-full items-center gap-3 rounded-md px-3 py-2 text-left', i === sel ? 'bg-brand/12 ring-1 ring-brand/40' : '')}>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-[14px] font-semibold">{r.label}</div>

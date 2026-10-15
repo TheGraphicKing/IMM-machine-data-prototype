@@ -358,10 +358,11 @@ export function createWorld(seed = 20261015): World {
 
   // previous shifts (synthetic, deterministic)
   for (const u of w.units) {
-    const base = 1300 * u.machineIds.length * 8 * (0.85 + u.health * 0.1);
+    // ≈ 140 good parts per machine-hour at this plant's mix → one 8 h shift
+    const base = 140 * u.machineIds.length * 8;
     const mk = (label: string, f: number) => {
-      const plan = base * 1.04;
-      const out = plan * Math.min(0.99, u.health * f);
+      const plan = base * 1.08;
+      const out = plan * Math.min(0.99, (0.78 + u.health * 0.15) * f);
       return { label, out: Math.round(out), plan: Math.round(plan), oee: Math.min(88, 62 + u.health * 18 * f), rej: Math.max(0.9, 4.2 - u.health * 3 * f) };
     };
     w.prevShifts[u.id] = [mk('Shift C · last night', 0.96), mk('Shift B · yesterday', 1.0), mk('Shift A · yesterday', 1.02)];

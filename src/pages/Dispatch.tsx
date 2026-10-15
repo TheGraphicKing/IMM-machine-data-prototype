@@ -20,11 +20,11 @@ export default function Dispatch() {
   const risks = w.orders.filter((o) => o.unitId === unit).map((o) => ({ o, r: orderRisk(w, o) }));
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="text-[13px] text-fg3">{w.unit[unit].name} · Gate & dispatch · from security gate entry</div>
-          <h1 className="num text-[30px] font-bold leading-9">Every truck on time and full</h1>
+          <h1 className="num text-[24px] font-bold leading-9">Every truck on time and full</h1>
         </div>
         <div className="flex gap-2">
           <select className="input !h-9 !w-auto !text-[13px]" value={unit} onChange={(e) => setUnit(e.target.value)} aria-label="Unit">
@@ -43,8 +43,8 @@ export default function Dispatch() {
           ['Left today', outToday, 'avg turnaround 46 min', 'run'],
         ].map(([l, v, s, tone], i) => (
           <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4" style={{ borderTop: tone ? `3px solid rgb(var(--${tone}))` : '3px solid #F4E3A1' }}>
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[30px] font-bold">{v}</div>
+            <div className="eyebrow">{l}</div>
+            <div className="num mt-1 text-[24px] font-bold">{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}
@@ -78,7 +78,7 @@ export default function Dispatch() {
                           </span>
                         </td>
                         <td className="!h-auto py-2">
-                          <span className="plate text-[15px]">{k.plate}</span>
+                          <span className="plate text-[13.5px]">{k.plate}</span>
                           <div className="mt-1 text-[11px] text-fg3">{k.transporter}</div>
                         </td>
                         <td>{k.party}</td>
@@ -86,7 +86,7 @@ export default function Dispatch() {
                         <td className="num">{k.doc}</td>
                         <td className="num">{clock(k.gateIn)}</td>
                         <td className="!text-right">
-                          <span className="num text-[18px] font-bold" style={{ color: `rgb(var(--${tone}-t))` }}>{min}′</span>
+                          <span className="num text-[15px] font-bold" style={{ color: `rgb(var(--${tone}-t))` }}>{min}′</span>
                         </td>
                       </motion.tr>
                     );
@@ -147,8 +147,8 @@ function GateEntry({ open, onClose, unit }: { open: boolean; onClose: () => void
     <Modal open={open} onClose={onClose} title="Security gate · new vehicle" width={480}>
       <div className="flex flex-col gap-3 p-5 text-[13px]">
         <label className="flex flex-col gap-1">
-          <span className="overline">Vehicle number *</span>
-          <input className="plate !h-12 !rounded-[6px] text-center text-[22px] outline-none" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} />
+          <span className="eyebrow">Vehicle number *</span>
+          <input className="plate !h-12 !rounded-[6px] text-center text-[18px] outline-none" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} />
         </label>
         <div className="grid grid-cols-2 gap-2">
           {(['IN', 'OUT'] as const).map((d) => (
@@ -159,7 +159,7 @@ function GateEntry({ open, onClose, unit }: { open: boolean; onClose: () => void
           ))}
         </div>
         <label className="flex flex-col gap-1">
-          <span className="overline">Customer / supplier</span>
+          <span className="eyebrow">Customer / supplier</span>
           <input className="input" value={party} onChange={(e) => setParty(e.target.value)} />
         </label>
         <button

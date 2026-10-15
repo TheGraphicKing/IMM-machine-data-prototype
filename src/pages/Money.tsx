@@ -9,6 +9,7 @@ import { DAY, TEAMS } from '../sim/catalog';
 import { h01 } from '../sim/records';
 import { clock, cx, fmt, inr, pct } from '../lib/format';
 import { EASE, Panel, Segmented, Ticker, planText, stageLabel } from '../ui/primitives';
+import { Sankey, type SLink, type SNode } from '../ui/diagrams';
 import { notify } from '../shell/Toasts';
 import type { Machine } from '../sim/types';
 
@@ -73,11 +74,11 @@ export default function Money({ view }: { view: 'money' | 'briefing' }) {
   const { basis, set } = useSim();
   const nav = useNavigate();
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="overline">CEO · Apex Polymers Group · live to {clock(useWorld().t)}</div>
-          <h1 className="num mt-1 text-[30px] font-bold leading-9">{view === 'money' ? 'Where we are losing money' : `CEO briefing · Thursday ${useWorld().day} October`}</h1>
+          <div className="eyebrow">CEO · Apex Polymers Group · live to {clock(useWorld().t)}</div>
+          <h1 className="num mt-1 text-[24px] font-bold leading-9">{view === 'money' ? 'Where we are losing money' : `CEO briefing · Thursday ${useWorld().day} October`}</h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Segmented<'money' | 'briefing'> options={[{ v: 'money', l: 'Money view' }, { v: 'briefing', l: 'Morning briefing' }]} value={view} onChange={(v) => nav(v === 'money' ? '/money' : '/briefing')} />
@@ -107,8 +108,6 @@ function MoneyView() {
   const a = M.all;
   const scale = (x: number) => x * k;
   const risk = M.risks.reduce((s, r) => s + r.r.value, 0);
-  const owners = Object.entries(a.byOwner).sort((x, y) => y[1] - x[1]);
-  const maxOwner = owners[0]?.[1] ?? 1;
 
   return (
     <div className="flex flex-col gap-4">
@@ -116,10 +115,10 @@ function MoneyView() {
         <Segmented<Win> options={[{ v: 'today', l: 'Today' }, { v: 'yesterday', l: 'Yesterday' }, { v: 'mtd', l: 'Month to date' }, { v: 'quarter', l: 'Quarter' }]} value={win} onChange={setWin} />
         {win !== 'today' && <span className="text-[12px] text-fg3">Historical windows replay stored daily closes · today is live</span>}
       </div>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <div className="glass col-span-2 overflow-hidden p-5 lg:col-span-1">
-          <div className="overline !text-fg3">Lost {win === 'today' ? `today · to ${clock(w.t)}` : win === 'yesterday' ? 'yesterday' : win === 'mtd' ? 'month to date' : 'this quarter'}</div>
-          <div className="num mt-1 text-[40px] font-bold leading-[44px] text-down-t">
+      <div className="grid grid-cols-2 gap-x-8 gap-y-6 lg:grid-cols-5">
+        <div data-tour="money-lost" className="col-span-2 flex flex-col gap-1 lg:col-span-1">
+          <div className="eyebrow !text-fg3">Lost {win === 'today' ? `today · to ${clock(w.t)}` : win === 'yesterday' ? 'yesterday' : win === 'mtd' ? 'month to date' : 'this quarter'}</div>
+          <div className="num text-[34px] font-normal leading-[40px] text-down-t">
             <Ticker value={scale(a.lost)} format={(n) => inr(n)} />
           </div>
           <div className="text-[12px] text-fg3">
@@ -132,37 +131,24 @@ function MoneyView() {
           ['Dispatch at risk today', inr(risk), `Sales value · ${new Set(M.risks.map((r) => r.o.customer)).size} customers · ${fmt(M.risks.reduce((s, r) => s + r.r.short, 0))} parts short`, risk > 0],
           ['Mould changes today', `${M.mcDone} / ${M.mcPlanned}`, `avg 38 min vs 30 std · overrun ${inr(a.mouldChange * 0.3)}`],
         ].map(([l, v, s, red], i) => (
-          <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.05 }} className="glass !rounded-[12px] p-5">
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[30px] font-bold leading-9" style={{ color: red ? 'rgb(var(--down-t))' : undefined }}>{v}</div>
+          <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.05 }} className="flex flex-col gap-1">
+            <div className="eyebrow">{l}</div>
+            <div className="num text-[26px] font-normal leading-[40px]" style={{ color: red ? 'rgb(var(--down-t))' : undefined }}>{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <Panel title="From value at standard to actual · ₹" sub="Click a bar to see units and causes · bars build in order and reconcile to the rupee">
+        <Panel id="money-waterfall" title="From value at standard to actual · ₹" sub="Click a bar to see units and causes · bars build in order and reconcile to the rupee">
           <Waterfall m={a} k={k} onBar={setDrill} drill={drill} />
           <AnimatePresence>{drill && <Drill key={drill} kind={drill} onClose={() => setDrill(null)} />}</AnimatePresence>
         </Panel>
-        <Panel title="Loss by cause owner" sub={`${win === 'today' ? 'today' : win} · ₹`}>
-          <div className="flex flex-col gap-2.5">
-            {owners.map(([key, v], i) => (
-              <div key={key}>
-                <div className="flex justify-between text-[13px]">
-                  <span className={cx('flex items-center gap-2', key === 'unassigned' && 'text-down-t')}>
-                    <span className={cx('h-2 w-2 rounded-full', key === 'unassigned' && 'pat-unassigned')} style={{ background: key === 'unassigned' ? undefined : OWNER_META[key]?.color }} />
-                    {OWNER_META[key]?.label ?? key}
-                  </span>
-                  <span className="num font-semibold">{inr(scale(v))}</span>
-                </div>
-                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-line/60">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${(v / maxOwner) * 100}%` }} transition={{ delay: i * 0.06, duration: 0.6, ease: EASE }} className={cx('h-full rounded-full', key === 'unassigned' && 'pat-unassigned')} style={{ background: key === 'unassigned' ? undefined : i === 0 ? 'rgb(var(--fg) / 0.8)' : 'rgb(var(--fg) / 0.32)' }} />
-                </div>
-              </div>
-            ))}
+        <Panel title="Who owns each rupee lost" sub="Loss type → team responsible · hover a flow">
+          <div data-tour="money-flow">
+            <LossFlow m={a} k={k} />
           </div>
-          <div className="mt-3 rounded-md bg-down/10 px-3 py-2 text-[12px] font-semibold text-down-t">{inr(scale(a.byOwner.unassigned ?? 0))} came from stops nobody assigned to a team.</div>
+          <div className="mt-3 rounded-[10px] bg-down/[0.07] px-3 py-2 text-[12px] text-down-t">{inr(scale(a.byOwner.unassigned ?? 0))} came from stops nobody assigned to a team.</div>
         </Panel>
       </div>
 
@@ -183,7 +169,7 @@ function MoneyView() {
                 <span className="hidden shrink-0 rounded-[3px] px-2 py-0.5 text-[10px] font-bold tracking-[0.06em] sm:inline" style={{ color: v.color, background: `${v.color}22` }}>
                   {v.owner}
                 </span>
-                <span className="num w-20 shrink-0 text-right text-[16px] font-bold text-down-t">{inr(v.value)}</span>
+                <span className="num w-20 shrink-0 text-right text-[14px] font-bold text-down-t">{inr(v.value)}</span>
               </motion.button>
             ))}
           </div>
@@ -217,6 +203,29 @@ function MoneyView() {
       </div>
     </div>
   );
+}
+
+function LossFlow({ m, k }: { m: MoneyT; k: number }) {
+  const stopOwners = ['maintenance', 'toolroom', 'store', 'utilities', 'production', 'planning', 'unassigned'];
+  const typeOf = (o: string) => (o === 'speed' ? 'speed' : o === 'quality' ? 'rej' : o === 'mouldchange' ? 'mc' : 'stops');
+  const owners = Object.entries(m.byOwner).filter(([, v]) => v > 0).sort((x, y) => y[1] - x[1]);
+  const types = [
+    { id: 'stops', label: 'Stops & idle' },
+    { id: 'mc', label: 'Mould change' },
+    { id: 'speed', label: 'Slow cycles' },
+    { id: 'rej', label: 'Rejects' },
+  ].filter((t) => owners.some(([o]) => typeOf(o) === t.id));
+  const nodes: SNode[] = [
+    { id: 'lost', label: 'Lost value', col: 0, color: 'rgb(var(--fg) / 0.8)' },
+    ...types.map((t, i) => ({ id: t.id, label: t.label, col: 1, color: `rgb(var(--down) / ${0.85 - i * 0.15})` })),
+    ...owners.map(([o]) => ({ id: `o-${o}`, label: OWNER_META[o]?.label ?? o, col: 2, color: o === 'unassigned' ? 'rgb(var(--down))' : OWNER_META[o]?.color ?? '#8A857C' })),
+  ];
+  const links: SLink[] = [
+    ...types.map((t) => ({ from: 'lost', to: t.id, v: owners.filter(([o]) => typeOf(o) === t.id).reduce((a, [, v]) => a + v, 0) })),
+    ...owners.map(([o, v]) => ({ from: typeOf(o), to: `o-${o}`, v })),
+  ];
+  void stopOwners;
+  return <Sankey nodes={nodes} links={links} height={300} fmtV={(v) => inr(v * k).replace('₹', '₹ ')} />;
 }
 
 function Waterfall({ m, k, onBar, drill }: { m: MoneyT; k: number; onBar: (s: string) => void; drill: string | null }) {
@@ -270,7 +279,7 @@ function Waterfall({ m, k, onBar, drill }: { m: MoneyT; k: number; onBar: (s: st
               transition={{ delay: 0.15 + i * 0.22, duration: 0.55, ease: EASE }}
             />
           </span>
-          <span className="num pl-3 text-right text-[16px] font-bold" style={{ color: b.v < 0 ? 'rgb(var(--down-t))' : undefined }}>
+          <span className="num pl-3 text-right text-[14px] font-bold" style={{ color: b.v < 0 ? 'rgb(var(--down-t))' : undefined }}>
             {b.v < 0 ? '−' : ''}
             {inr(Math.abs(b.v * k))}
           </span>
@@ -337,7 +346,7 @@ function Briefing() {
             <button className="btn btn-ghost !h-8" onClick={() => nav('/rollup')}><MapIcon size={14} />Open roll-up map</button>
           </div>
         </div>
-        <p className="num mt-3 text-[30px] font-semibold leading-[38px] sm:text-[36px] sm:leading-[44px]">
+        <p className="num mt-3 text-[24px] font-semibold leading-[38px] sm:text-[28px] sm:leading-[44px]">
           We have lost <span className="text-down-t">{inr(a.lost)}</span> so far today, <span className={a.lost > M.yday ? 'text-down-t' : 'text-run-t'}>{inr(Math.abs(a.lost - M.yday))} {a.lost > M.yday ? 'more' : 'less'}</span> than yesterday at this time.
         </p>
         <ol className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -346,8 +355,8 @@ function Briefing() {
             `Quality losses are ${inr(a.rejects)} today across ${fmt(aggMachines(w, w.machines).bad)} NOT OK parts. ${M.leaks.find((l) => l.v.owner === 'QUALITY ASSIGNED') ? 'Short shots on ' + M.leaks.find((l) => l.v.owner === 'QUALITY ASSIGNED')!.m.code + ' are the top quality leak.' : 'No single machine dominates.'}`,
             `${inr(a.byOwner.unassigned ?? 0)} of today’s loss has no owner because stops were never assigned. ${M.byUnit.sort((x, y) => (y.m.byOwner.unassigned ?? 0) - (x.m.byOwner.unassigned ?? 0))[0].u.name} accounts for most of it.`,
           ].map((t, i) => (
-            <motion.li key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.1 }} className="flex gap-3 text-[15px] leading-6">
-              <span className="num grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-[16px] font-bold text-ink">{i + 1}</span>
+            <motion.li key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.1 }} className="flex gap-3 text-[13.5px] leading-6">
+              <span className="num grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-[14px] font-bold text-ink">{i + 1}</span>
               <span>{t}</span>
             </motion.li>
           ))}
@@ -434,14 +443,14 @@ function Briefing() {
           </Panel>
         </div>
       </div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass relative overflow-hidden p-6">
+      <motion.div data-tour="decision" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass relative overflow-hidden p-6">
         <div className="flex items-start gap-4">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
             <Lightbulb size={22} />
           </div>
           <div>
-            <div className="overline !text-brand">One decision for today</div>
-            <p className="num mt-1 text-[24px] font-semibold leading-8">
+            <div className="eyebrow !text-brand">One decision for today</div>
+            <p className="num mt-1 text-[19px] font-semibold leading-8">
               Heater-band failures have cost {inr(heaterLoss * mtdK * 0.45)} this month across 4 units. A preventive heater check on all 450 T machines would cost about ₹1.8 L and pays back in {Math.max(3, Math.round((180000 / Math.max(1, heaterLoss * mtdK * 0.45)) * 30))} days.
             </p>
             <div className="mt-3 flex gap-2">

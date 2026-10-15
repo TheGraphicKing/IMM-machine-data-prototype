@@ -61,10 +61,10 @@ export default function Breakdowns() {
   };
 
   return (
-    <div className="mx-auto flex max-w-[1680px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1680px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="num text-[30px] font-bold leading-9">Breakdowns</h1>
+          <h1 className="num text-[24px] font-bold leading-9">Breakdowns</h1>
           <div className="text-[13px] text-fg3">Every stop has an owner and a root cause · drag a card to move it through the lifecycle</div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -87,15 +87,15 @@ export default function Breakdowns() {
           ['Repeat failures', w.tickets.filter((t) => t.unitId === unit && t.symptom.includes('Heater')).length > 1 ? 1 : 0, 'same root cause · 7 days'],
         ].map(([l, v, s], i) => (
           <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4">
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[28px] font-bold">{v}</div>
+            <div className="eyebrow">{l}</div>
+            <div className="num mt-1 text-[22px] font-bold">{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}
       </div>
 
       {view === 'board' ? (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-5">
+        <div data-tour="board" className="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-5">
           {COLS.map((c) => {
             const cards = open.filter((t) => t.stage === c.stage).sort((a, b) => a.createdAt - b.createdAt);
             return (
@@ -108,7 +108,7 @@ export default function Breakdowns() {
               >
                 <div className="flex items-center gap-2 px-1">
                   <span className={cx('h-3 w-6 rounded-[2px]', c.cls)} style={{ ['--team' as string]: '#C47A55' }} />
-                  <span className="num text-[16px] font-semibold">{STAGE_META[c.stage].label}</span>
+                  <span className="num text-[14px] font-semibold">{STAGE_META[c.stage].label}</span>
                   <span className="num ml-auto rounded-full bg-panel3 px-2 text-[12px] font-semibold">{cards.length}</span>
                 </div>
                 <div className="px-1 text-[11px] text-fg3">
@@ -131,12 +131,16 @@ export default function Breakdowns() {
             {role === 'technician' && <span className="ml-1 font-semibold text-brand">You are viewing as the maintenance technician.</span>}
           </div>
           <div className="flex flex-wrap justify-center gap-10">
-            <PhoneFrame time={clock(w.t)} label="Production supervisor · R. Tomar">
-              <SupervisorApp unitId={unit === 'all' ? 'MN1' : unit} />
-            </PhoneFrame>
-            <PhoneFrame time={clock(w.t)} label="Maintenance technician · S. Pillai">
-              <TechnicianApp unitId={unit === 'all' ? 'MN1' : unit} />
-            </PhoneFrame>
+            <div data-tour="phone-supervisor">
+              <PhoneFrame time={clock(w.t)} label="Production supervisor · R. Tomar">
+                <SupervisorApp unitId={unit === 'all' ? 'MN1' : unit} />
+              </PhoneFrame>
+            </div>
+            <div data-tour="phone-tech">
+              <PhoneFrame time={clock(w.t)} label="Maintenance technician · S. Pillai">
+                <TechnicianApp unitId={unit === 'all' ? 'MN1' : unit} />
+              </PhoneFrame>
+            </div>
             <PhoneFrame time={clock(w.t)} label="Tool room technician · V. Shetty">
               <TechnicianApp unitId={unit === 'all' ? 'MN1' : unit} team="toolroom" />
             </PhoneFrame>
@@ -190,7 +194,7 @@ function TicketCard({ tk, onDrag, onOpen }: { tk: Ticket; onDrag: (id: string | 
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-1.5">
             <GripVertical size={14} className="text-fg4" />
-            <span className="num text-[18px] font-bold">{m.code}</span>
+            <span className="num text-[15px] font-bold">{m.code}</span>
             <span className="text-[11px] text-fg3">{w.unit[m.unitId].name}</span>
           </span>
           <span className={cx('num flex items-center gap-1 text-[13px] font-semibold', sla ? 'text-down-t' : 'text-fg2')}>
@@ -225,16 +229,16 @@ function TicketDrawer({ id, onClose }: { id: string | null; onClose: () => void 
       {tk && (
         <div className="flex flex-col gap-4 p-5 text-[13px]">
           <div>
-            <div className="num text-[28px] font-bold">{w.machine[tk.machineId].code} · {w.unit[tk.unitId].name}</div>
+            <div className="num text-[22px] font-bold">{w.machine[tk.machineId].code} · {w.unit[tk.unitId].name}</div>
             <div className="text-fg3">{tk.symptom} · opened {clock(tk.createdAt)} · {fmt((w.t - tk.createdAt) / 60)} min ago</div>
             <div className="mt-2"><StageBadge stage={tk.stage} team={tk.team} /></div>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">Assignee</div><div className="font-semibold">{tk.assignee ?? '—'}</div></div>
-            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">Root cause</div><div className="font-semibold">{tk.stage === 'unassigned' ? '—' : tk.rootCause}</div></div>
+            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">Assignee</div><div className="font-semibold">{tk.assignee ?? '—'}</div></div>
+            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">Root cause</div><div className="font-semibold">{tk.stage === 'unassigned' ? '—' : tk.rootCause}</div></div>
           </div>
           <div>
-            <div className="overline mb-2">History</div>
+            <div className="eyebrow mb-2">History</div>
             <div className="relative flex flex-col gap-2 pl-4">
               <div className="absolute bottom-1 left-[5px] top-1 w-px bg-line" />
               {tk.history.map((h, i) => (

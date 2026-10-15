@@ -43,7 +43,7 @@ export default function MachineTile({ w, m, i = 0, compact }: { w: World; m: Mac
       aria-label={`${m.code} ${m.state}`}
     >
       <div className="flex items-center justify-between gap-2">
-        <motion.span layoutId={`m-title-${m.id}`} className="num whitespace-nowrap text-[16px] font-medium leading-6">
+        <motion.span layoutId={`m-title-${m.id}`} className="num whitespace-nowrap text-[14px] font-medium leading-6">
           {m.code}
         </motion.span>
         <StatePill s={m.state} />
@@ -52,7 +52,7 @@ export default function MachineTile({ w, m, i = 0, compact }: { w: World; m: Mac
         {md?.id} · {m.tonnage} T{!compact && ` · ${m.hall}`}
       </div>
       <div className="flex items-baseline gap-2">
-        <span className="num text-[22px] font-medium leading-7">{fmt(k.good)}</span>
+        <span className="num text-[18px] font-medium leading-7">{fmt(k.good)}</span>
         <span className="num text-[13px] font-semibold" style={{ color: p >= 95 ? 'rgb(var(--run-t))' : p >= 88 ? 'rgb(var(--idle-t))' : 'rgb(var(--down-t))' }}>
           {p.toFixed(0)}%
         </span>

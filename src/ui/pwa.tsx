@@ -141,7 +141,7 @@ function AssignScreen({ id, onDone, onBack }: { id: string; onDone: () => void; 
       <Header title={`${m.code} · assign`} sub={`Stopped ${dur(w.t - tk.createdAt)} · ${m.mouldId}`} onBack={onBack} />
       <div className="flex flex-col gap-4 p-4">
         <div>
-          <div className="overline mb-2">1 · Who should fix it?</div>
+          <div className="eyebrow mb-2">1 · Who should fix it?</div>
           <div className="grid grid-cols-2 gap-2">
             {TICKET_TEAMS.map((t) => (
               <button key={t} onClick={() => setTeam(t)} className={cx('flex h-14 items-center gap-2 rounded-[12px] border px-3 text-left text-[13px] font-semibold transition', team === t ? 'bg-brand/10' : 'border-line2')} style={{ borderColor: team === t ? TEAMS[t].color : undefined }}>
@@ -152,7 +152,7 @@ function AssignScreen({ id, onDone, onBack }: { id: string; onDone: () => void; 
           </div>
         </div>
         <div>
-          <div className="overline mb-2">2 · What do you see? <span className="normal-case tracking-normal">(optional)</span></div>
+          <div className="eyebrow mb-2">2 · What do you see? <span className="normal-case tracking-normal">(optional)</span></div>
           <div className="flex flex-wrap gap-1.5">
             {SYMPTOMS.slice(0, 6).map((s) => (
               <button key={s} onClick={() => setSym(s)} className={cx('h-10 rounded-full px-3 text-[13px] font-semibold', sym === s ? 'bg-fg text-bg' : 'border border-line2')}>
@@ -162,7 +162,7 @@ function AssignScreen({ id, onDone, onBack }: { id: string; onDone: () => void; 
           </div>
         </div>
         <div>
-          <div className="overline mb-2">3 · Photo / video</div>
+          <div className="eyebrow mb-2">3 · Photo / video</div>
           <div className="flex gap-2">
             {Array.from({ length: photos }).map((_, i) => (
               <div key={i} className="grid h-16 w-16 place-items-center rounded-[10px] bg-[repeating-linear-gradient(45deg,rgb(var(--panel3))_0_6px,rgb(var(--panel2))_6px_12px)] text-[10px] text-fg3">
@@ -200,7 +200,7 @@ function VerifyScreen({ id, onDone }: { id: string; onDone: () => void }) {
       <div className="flex flex-col gap-3 p-4 text-[13px]">
         <div className="flex items-center justify-between rounded-[12px] bg-run/12 p-3">
           <div>
-            <div className="overline">Machine signal · live</div>
+            <div className="eyebrow">Machine signal · live</div>
             <div className="font-semibold text-run-t">Running since {clock(m.since)} · {dur(w.t - m.since)}</div>
           </div>
           <Check className="text-run-t" />
@@ -218,7 +218,7 @@ function VerifyScreen({ id, onDone }: { id: string; onDone: () => void }) {
         </div>
         {rejecting ? (
           <div className="flex flex-col gap-2">
-            <div className="overline">Why reject?</div>
+            <div className="eyebrow">Why reject?</div>
             {['Still flashing', 'Weight out of tolerance', 'Leak not fixed'].map((r) => (
               <Big key={r} tone="danger" onClick={() => (rejectFix(id, r), onDone())}>{r}</Big>
             ))}
@@ -319,7 +319,7 @@ function WorkScreen({ id, onBack, onFix, onSheet }: { id: string; onBack: () => 
           </div>
         </div>
         <div className="rounded-[12px] border border-line/70 p-3">
-          <div className="overline">From production · R. Tomar {clock(tk.createdAt)}</div>
+          <div className="eyebrow">From production · R. Tomar {clock(tk.createdAt)}</div>
           <div className="mt-1 font-semibold">{tk.symptom}</div>
           <div className="mt-2 flex gap-1.5">
             {Array.from({ length: Math.max(1, tk.photos) }).map((_, i) => (
@@ -329,12 +329,12 @@ function WorkScreen({ id, onBack, onFix, onSheet }: { id: string; onBack: () => 
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-[12px] border border-line/70 p-3">
-            <div className="overline">Machine</div>
+            <div className="eyebrow">Machine</div>
             <div className="font-semibold">{m.make} {m.tonnage} T · {m.hall}</div>
             <div className={cx('text-[12px] font-semibold', m.state === 'DOWN' ? 'text-down-t' : 'text-run-t')}>{m.state === 'DOWN' ? 'Stopped (OPC)' : 'Running (OPC)'}</div>
           </div>
           <div className="rounded-[12px] border border-line/70 p-3">
-            <div className="overline">Zone 3 actual / set</div>
+            <div className="eyebrow">Zone 3 actual / set</div>
             <div className="num text-[20px] font-bold" style={{ color: m.act.z3 < m.set.z3 - 10 ? 'rgb(var(--down-t))' : undefined }}>
               {Math.round(m.act.z3)} / {Math.round(m.set.z3)} °C
             </div>
@@ -365,7 +365,7 @@ function CloseScreen({ id, onBack, onDone }: { id: string; onBack: () => void; o
       <Header title={`${m.code} · close job`} sub={`Downtime ${dur(w.t - tk.createdAt)} · ${TEAMS[team].label}`} onBack={onBack} />
       <div className="flex flex-col gap-3 p-4 text-[13px]">
         <div>
-          <div className="overline mb-1.5">Root cause *</div>
+          <div className="eyebrow mb-1.5">Root cause *</div>
           <div className="flex flex-col gap-1.5">
             {causes.map((c) => (
               <button key={c.code} onClick={() => (setCause(c), c.spare && !spares.find((s) => s.code === c.spare![0]) && setSpares((s) => [...s, { code: c.spare![0], name: c.spare![1], bin: c.spare![2], stock: c.spare![3], qty: 1 }]))} className={cx('flex h-12 items-center justify-between rounded-[10px] border px-3 text-left', cause.code === c.code ? 'border-brand bg-brand/10' : 'border-line2')}>
@@ -376,7 +376,7 @@ function CloseScreen({ id, onBack, onDone }: { id: string; onBack: () => void; o
           </div>
         </div>
         <div>
-          <div className="overline mb-1.5">Spares used</div>
+          <div className="eyebrow mb-1.5">Spares used</div>
           {spares.map((s, i) => (
             <div key={s.code} className="flex items-center gap-2 border-b border-line/50 py-2">
               <div className="min-w-0 flex-1">
@@ -413,7 +413,7 @@ function TransferSheet({ id, onDone }: { id: string; onDone: () => void }) {
         <div className="num text-[20px] font-bold">Transfer {w.machine[tk.machineId].code}</div>
         <span className="text-fg3">from {tk.team ? TEAMS[tk.team].label : ''}</span>
       </div>
-      <div className="overline">To</div>
+      <div className="eyebrow">To</div>
       <div className="grid grid-cols-2 gap-2">
         {(['toolroom', 'utilities', 'store', 'quality'] as TeamId[]).map((t) => (
           <button key={t} onClick={() => setTo(t)} className={cx('flex h-12 items-center gap-2 rounded-[10px] border px-3 font-semibold', to === t && 'bg-brand/10')} style={{ borderColor: to === t ? TEAMS[t].color : undefined }}>
@@ -422,7 +422,7 @@ function TransferSheet({ id, onDone }: { id: string; onDone: () => void }) {
           </button>
         ))}
       </div>
-      <div className="overline">Why</div>
+      <div className="eyebrow">Why</div>
       <div className="flex flex-wrap gap-1.5">
         {['Mould-side fault', 'Needs mould removal', 'Not a machine issue'].map((x) => (
           <button key={x} onClick={() => setWhy(x)} className={cx('h-10 rounded-full px-3 font-semibold', why === x ? 'bg-fg text-bg' : 'border border-line2')}>

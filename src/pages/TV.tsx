@@ -83,7 +83,7 @@ export default function TV() {
   const title = page.kind === 'timeline' ? `TIMELINE ${page.page! + 1}/${pages.filter((p) => p.kind === 'timeline').length}` : page.kind === 'reasons' ? 'DOWNTIME BY REASON' : page.kind === 'avail' ? 'AVAILABILITY RANKING' : page.kind === 'trucks' ? 'GATE & DISPATCH' : page.kind === 'production' ? 'PRODUCTION' : `${page.l} · SINGLE MACHINE`;
 
   return (
-    <div className={cx('fixed inset-0 flex items-center justify-center overflow-hidden', light ? 'bg-[#F1F0EE]' : 'bg-black')} data-theme={light ? 'light' : 'dark'}>
+    <div data-tour="tv" className={cx('fixed inset-0 flex items-center justify-center overflow-hidden', light ? 'bg-[#F1F0EE]' : 'bg-black')} data-theme={light ? 'light' : 'dark'}>
       <div className={cx('relative flex flex-col overflow-hidden', light ? 'bg-[#FAFAF9] text-[#1F2022]' : 'bg-[#18191B] text-white')} style={{ width: 1920, height: 1080, transform: `scale(${scale})`, transformOrigin: 'center' }}>
         {/* header */}
         {!(page.kind === 'single' && singleDown) && (

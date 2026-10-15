@@ -21,7 +21,7 @@ export default function DemoControls() {
         >
           <div className="mb-2 flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
-              <span className="overline !text-brand">Demo controls</span>
+              <span className="eyebrow !text-brand">Demo controls</span>
               <span className="text-[12px] text-fg3">Presenter panel · press D to hide</span>
             </div>
             <button className="grid h-7 w-7 place-items-center rounded text-fg3 hover:text-fg" onClick={() => set({ demoOpen: false })} aria-label="Close demo controls">

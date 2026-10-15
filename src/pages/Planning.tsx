@@ -18,11 +18,11 @@ export default function Planning() {
   const w = useWorld();
   const [tab, setTab] = useState<'board' | 'capacity'>('board');
   return (
-    <div className="mx-auto flex max-w-[1700px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1700px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="text-[13px] text-fg3">Manesar U1 · PPC · S. Arora</div>
-          <h1 className="num text-[30px] font-bold leading-9">Production planning</h1>
+          <h1 className="num text-[24px] font-bold leading-9">Production planning</h1>
           <div className="text-[13px] text-fg3">Right job, right machine, right time · drag bars to reschedule, constraints checked live</div>
         </div>
         <Segmented<'board' | 'capacity'> options={[{ v: 'board', l: 'Planning board' }, { v: 'capacity', l: 'Capacity & RFQ' }]} value={tab} onChange={setTab} />
@@ -96,18 +96,18 @@ function Board() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-4 text-[13px]">
-          <span>Jobs <b className="num text-[16px]">{jobs.length}</b></span>
-          <span>Changeovers <b className="num text-[16px]">{changeovers}</b></span>
-          <span>Late <b className="num text-[16px]" style={{ color: late.length ? 'rgb(var(--down-t))' : undefined }}>{late.length}</b></span>
-          <span>Conflicts <b className="num text-[16px]" style={{ color: conflicts.size ? 'rgb(var(--down-t))' : undefined }}>{conflicts.size}</b></span>
+          <span>Jobs <b className="num text-[14px]">{jobs.length}</b></span>
+          <span>Changeovers <b className="num text-[14px]">{changeovers}</b></span>
+          <span>Late <b className="num text-[14px]" style={{ color: late.length ? 'rgb(var(--down-t))' : undefined }}>{late.length}</b></span>
+          <span>Conflicts <b className="num text-[14px]" style={{ color: conflicts.size ? 'rgb(var(--down-t))' : undefined }}>{conflicts.size}</b></span>
         </div>
         <div className="ml-auto flex gap-2">
           <button className="btn btn-ghost" onClick={() => (setJobs(w.jobs.map((j) => ({ ...j }))), notify({ tone: 'info', title: 'Draft reset to published plan' }))}>Reset draft</button>
-          <button className="btn btn-ghost" onClick={autoSchedule}><Wand2 size={14} />Auto-schedule</button>
+          <button data-tour="plan-auto" className="btn btn-ghost" onClick={autoSchedule}><Wand2 size={14} />Auto-schedule</button>
           <button className="btn btn-primary" onClick={() => notify({ tone: 'run', title: 'Plan published', body: `${jobs.length} work orders · hourly targets update from ${clock(Math.ceil(w.t / 3600) * 3600)}` })}>Publish plan</button>
         </div>
       </div>
-      <div className="glass overflow-x-auto !rounded-[12px]">
+      <div data-tour="gantt" className="glass overflow-x-auto !rounded-[12px]">
         <div className="min-w-[1300px]">
           <div className="sticky top-0 z-10 grid grid-cols-[150px_minmax(0,1fr)] border-b border-line/60 bg-panel2/90 backdrop-blur">
             <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg3">Machine</div>
@@ -191,13 +191,13 @@ function Board() {
         {s && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="glass flex flex-wrap items-center gap-6 !rounded-[12px] p-4 text-[13px]">
             <div>
-              <div className="overline">Work order</div>
-              <div className="num text-[20px] font-bold">{s.id}</div>
+              <div className="eyebrow">Work order</div>
+              <div className="num text-[16px] font-bold">{s.id}</div>
             </div>
-            <div><div className="overline">Part</div><div className="font-semibold">{s.partName} · {s.customer}</div></div>
-            <div><div className="overline">Mould</div><div className="font-semibold">{s.mouldId}</div></div>
-            <div><div className="overline">Window</div><div className="num font-semibold">{clock(s.start * 3600)} → {clock((s.start + s.dur) * 3600)}</div></div>
-            <div><div className="overline">Due</div><div className="num font-semibold" style={{ color: s.start + s.dur > s.due ? 'rgb(var(--down-t))' : 'rgb(var(--run-t))' }}>{clock(s.due * 3600)} {s.due >= 18 ? 'tomorrow' : 'today'}</div></div>
+            <div><div className="eyebrow">Part</div><div className="font-semibold">{s.partName} · {s.customer}</div></div>
+            <div><div className="eyebrow">Mould</div><div className="font-semibold">{s.mouldId}</div></div>
+            <div><div className="eyebrow">Window</div><div className="num font-semibold">{clock(s.start * 3600)} → {clock((s.start + s.dur) * 3600)}</div></div>
+            <div><div className="eyebrow">Due</div><div className="num font-semibold" style={{ color: s.start + s.dur > s.due ? 'rgb(var(--down-t))' : 'rgb(var(--run-t))' }}>{clock(s.due * 3600)} {s.due >= 18 ? 'tomorrow' : 'today'}</div></div>
             <div className="text-fg3">Constraints: mould–machine mapping ✓ · tonnage ✓ · mould PM ✓ · operator skill ✓{conflicts.has(s.id) && <span className="ml-1 font-semibold text-down-t">· overlaps previous job</span>}</div>
             <button className="btn btn-ghost ml-auto" onClick={() => setSel(null)}>Close</button>
           </motion.div>
@@ -258,15 +258,15 @@ function Capacity() {
           })}
         </div>
         <div className="mt-4 rounded-[10px] border border-line/70 p-3 text-[13px]">
-          <div className="overline">Hidden factory</div>
-          <div className="num text-[24px] font-bold">≈ {hidden.toFixed(0)} machines</div>
+          <div className="eyebrow">Hidden factory</div>
+          <div className="num text-[19px] font-bold">≈ {hidden.toFixed(0)} machines</div>
           <div className="text-fg3">of capacity lost to downtime, speed and quality right now · {inr(mon.lost)} today. Recovering 5 OEE points frees ≈ {Math.round(w.machines.length * 0.05)} machines — no capex.</div>
         </div>
       </Panel>
       <Panel title="Can we take this order?" sub="Feasible machines, hours, earliest date and impact on other orders">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <label className="flex flex-col gap-1">
-            <span className="overline">Part / mould</span>
+            <span className="eyebrow">Part / mould</span>
             <select className="input" value={part} onChange={(e) => setPart(e.target.value)}>
               {['Bumper bracket', 'Lamp housing', 'Glove box lid', 'Fan shroud', 'Side panel LH'].map((p) => (
                 <option key={p}>{p}</option>
@@ -274,11 +274,11 @@ function Capacity() {
             </select>
           </label>
           <label className="flex flex-col gap-1">
-            <span className="overline">Quantity</span>
+            <span className="eyebrow">Quantity</span>
             <input className="input num" type="number" value={qty} onChange={(e) => setQty(Math.max(0, +e.target.value))} />
           </label>
           <label className="flex flex-col gap-1">
-            <span className="overline">Due by</span>
+            <span className="eyebrow">Due by</span>
             <select className="input" value={due} onChange={(e) => setDue(+e.target.value)}>
               {[22, 25, 28, 30, 31].map((x) => (
                 <option key={x} value={x}>{x} Oct 2026</option>
@@ -306,13 +306,13 @@ function Capacity() {
               <motion.div key="v" initial={{ opacity: 0, scale: 0.96, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }} className={cx('rounded-[12px] border p-4', verdict.ok ? 'border-run/50 bg-run/10' : 'border-idle/50 bg-idle/10')}>
                 <div className="flex items-center gap-3">
                   {verdict.ok ? <CheckCircle2 size={30} className="text-run-t" /> : <AlertTriangle size={30} className="text-idle-t" />}
-                  <div className="num text-[26px] font-bold">{verdict.ok ? 'Yes — feasible' : 'Tight — feasible with changes'}</div>
+                  <div className="num text-[20px] font-bold">{verdict.ok ? 'Yes — feasible' : 'Tight — feasible with changes'}</div>
                 </div>
                 <div className="mt-2 grid grid-cols-2 gap-3 text-[13px]">
-                  <div><div className="overline">Machine-hours needed</div><div className="num text-[20px] font-semibold">{fmt(verdict.hours)} h</div></div>
-                  <div><div className="overline">Earliest completion</div><div className="num text-[20px] font-semibold">{Math.min(31, verdict.earliest)} Oct</div></div>
+                  <div><div className="eyebrow">Machine-hours needed</div><div className="num text-[16px] font-semibold">{fmt(verdict.hours)} h</div></div>
+                  <div><div className="eyebrow">Earliest completion</div><div className="num text-[16px] font-semibold">{Math.min(31, verdict.earliest)} Oct</div></div>
                 </div>
-                <div className="mt-2 text-[13px]"><span className="overline">Machines</span><div>{verdict.machines.join(' · ')}</div></div>
+                <div className="mt-2 text-[13px]"><span className="eyebrow">Machines</span><div>{verdict.machines.join(' · ')}</div></div>
                 <div className="mt-2 text-[13px] text-fg2">Impact: {verdict.impact}</div>
               </motion.div>
             )}

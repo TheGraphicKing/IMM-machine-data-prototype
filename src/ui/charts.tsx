@@ -195,3 +195,60 @@ export function Ring({ v, size = 64, stroke = 6, color = 'rgb(var(--run))', chil
     </div>
   );
 }
+
+/** OEE as three concentric rings: Availability (outer) × Performance × Quality (inner), OEE in the middle. */
+export function ApqRings({ A, P, Q, oee, size = 150, showLegend = true }: { A: number; P: number; Q: number; oee: number; size?: number; showLegend?: boolean }) {
+  const rings: [string, number, string][] = [
+    ['Availability', A, 'rgb(var(--fg) / 0.85)'],
+    ['Performance', P, 'rgb(var(--fg) / 0.5)'],
+    ['Quality', Q, 'rgb(var(--fg) / 0.28)'],
+  ];
+  const sw = size * 0.065;
+  return (
+    <div className="flex items-center gap-5">
+      <div className="relative shrink-0" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90">
+          {rings.map(([l, v, c], i) => {
+            const r = size / 2 - sw / 2 - i * (sw + 4);
+            const circ = 2 * Math.PI * r;
+            return (
+              <g key={l}>
+                <circle cx={size / 2} cy={size / 2} r={r} stroke="rgb(var(--line))" strokeWidth={sw} fill="none" />
+                <motion.circle cx={size / 2} cy={size / 2} r={r} stroke={c} strokeWidth={sw} fill="none" strokeLinecap="round" strokeDasharray={circ} initial={{ strokeDashoffset: circ }} animate={{ strokeDashoffset: circ * (1 - Math.min(100, v) / 100) }} transition={{ duration: 1.1, delay: i * 0.15, ease: EASE }} />
+              </g>
+            );
+          })}
+        </svg>
+        <div className="absolute inset-0 grid place-items-center text-center">
+          <div>
+            <div className="num leading-none" style={{ fontSize: size * 0.17 }}>{oee.toFixed(1)}</div>
+            <div className="eyebrow mt-1 !text-[9px]">OEE %</div>
+          </div>
+        </div>
+      </div>
+      {showLegend && (
+        <div className="flex flex-col gap-2.5">
+          {rings.map(([l, v, c]) => (
+            <div key={l} className="flex items-center gap-2.5">
+              <span className="h-2 w-2 rounded-full" style={{ background: c }} />
+              <span className="w-[86px] text-[12px] text-fg3">{l}</span>
+              <span className="num text-[14px]">{v.toFixed(0)}%</span>
+            </div>
+          ))}
+          <div className="text-[11px] text-fg4">A × P × Q · target 75%</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Actual vs plan as a slim bullet bar with a plan tick. */
+export function Bullet({ actual, plan, max, tone = 'rgb(var(--fg) / 0.75)', h = 6 }: { actual: number; plan: number; max?: number; tone?: string; h?: number }) {
+  const m = max ?? (Math.max(actual, plan) * 1.1 || 1);
+  return (
+    <div className="relative w-full rounded-full bg-line/60" style={{ height: h }}>
+      <motion.div className="absolute inset-y-0 left-0 rounded-full" style={{ background: tone }} initial={{ width: 0 }} animate={{ width: `${(actual / m) * 100}%` }} transition={{ duration: 0.8, ease: EASE }} />
+      <div className="absolute -bottom-1 -top-1 w-[2px] rounded bg-brand" style={{ left: `${(plan / m) * 100}%` }} />
+    </div>
+  );
+}

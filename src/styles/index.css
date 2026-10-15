@@ -83,7 +83,7 @@ body {
   background: rgb(var(--bg));
   color: rgb(var(--fg));
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
   font-feature-settings: 'cv11', 'ss01';
   letter-spacing: -0.006em;
@@ -117,7 +117,7 @@ body {
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.025em;
   }
-  .overline {
+  .eyebrow {
     font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
     font-size: 10.5px;
     line-height: 14px;
@@ -246,13 +246,13 @@ body {
     font-weight: 400;
     color: rgb(var(--fg3));
     background: rgb(var(--panel));
-    padding: 12px 12px;
+    padding: 12px 14px;
     white-space: nowrap;
     border-bottom: 1px solid rgb(var(--line));
   }
   .tbl td {
-    padding: 0 12px;
-    height: 40px;
+    padding: 0 14px;
+    height: 46px;
     border-bottom: 1px solid rgb(var(--line) / 0.7);
     white-space: nowrap;
   }

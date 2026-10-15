@@ -29,16 +29,16 @@ Stack: Vite + React 18 + TypeScript (strict) + Tailwind, three.js via @react-thr
 | Route | Screen |
 |---|---|
 | (first load) | Cinematic intro: 3D factory assembles, sign-in (any input), 5 role cards with 3D tilt |
-| `/home` | Home — greeting, live KPI strip, org sections with unit tiles, live alerts rail; Tiles ↔ hierarchy table |
+| `/home` | Home — four headline numbers, an orbitable 3D group network (HQ → regions → plant towers: height = output, cap = plan status), a short “needs attention” list and one quiet line per plant |
 | `/rollup` | 3D India roll-up — pillars (height = metric, colour = plan status), arcs to customer plants, metric switcher, unit preview |
 | `/twin/:unit` | Digital twin — orbitable 3D plant, status halos, DOWN timers, mould-change gantry, heatmap / people / trucks toggles, fly-in panel |
-| `/unit/:unit`, `/unit/:unit/timeline` | Unit dashboard (KPIs, hourly vs plan, tiles, Pareto, shift comparison) and machine timeline (status bars with ticket-stage patterns) |
+| `/unit/:unit`, `/unit/:unit/timeline` | Unit dashboard — A × P × Q rings, a “where the shift's time went” flow (planned time → running / idle / mould change / down → good parts / slow cycles / rejects), an isometric floor map (Map ↔ Tiles), hourly vs plan, Pareto, shift comparison — and the machine timeline (status bars with ticket-stage patterns) |
 | `/machine/:id` | Machine dashboard — 3D machine (heater zones glow by temperature; click a zone), Production / Process (SPC) / Quality / Energy / History |
 | `/records` | Production records — weight-vs-tolerance bars, part drawer with process data at that shot, by hour / by machine, manual record |
 | `/alerts` | Alert inbox with evidence + timeline + actions; `?tab=rules` rules editor with scope overrides |
 | `/breakdowns` | Kanban with drag-and-drop between stages; `?view=phones` live supervisor + technician PWAs |
 | `/moulds`, `/mould-setup` | Mould health (shots to PM rings, cavity map block/unblock, SMED timers) and setup queue + 5-step wizard with “Promote” animation |
-| `/money`, `/briefing` | CEO money view (₹ waterfall that reconciles to the rupee, loss by owner, leaks, dispatch at risk) and morning briefing |
+| `/money`, `/briefing` | CEO money view (₹ waterfall that reconciles to the rupee, a loss flow from loss type to owning team, leaks, dispatch at risk) and morning briefing |
 | `/planning` | Gantt with draggable jobs, changeover blocks, Auto-schedule, Capacity & RFQ calculator |
 | `/people`, `/energy`, `/dispatch` | Roster/skills/leaderboard · power flow + peak-demand gauge · trucks with number plates + dispatch at risk |
 | `/ask` | Ask IMMDATA — scripted streaming answers computed from the live simulator, with charts and links |
@@ -55,18 +55,24 @@ Stack: Vite + React 18 + TypeScript (strict) + Tailwind, three.js via @react-thr
 | Top bar | Theme (dark / light paper), Calm mode (turns heavy effects off; also follows `prefers-reduced-motion`), alert chime (muted by default), role switcher, Play tour |
 | TV mode | ← / → pages · Space pause · T light/dark · Esc exit |
 
-## Guided tour (≈ 95 s, “Play tour”)
+## Guided walkthrough (≈ 3 min, “Play tour”)
 
-1. **Home** — every unit live, every number with a comparison.
-2. **Digital twin** — Manesar U1 in 3D, machines glow in their status.
-3. **A machine goes down** — IMM-16 trips on a heater fault (machine signal is the truth).
-4. **Alerts** — critical alert with evidence and timeline.
-5. **Two taps to assign** — supervisor PWA sends it to Maintenance with a photo.
-6. **“I’m on it”** — technician accepts; repair clock starts.
-7. **Fixed and verified** — root cause + spares, production accepts, downtime booked.
-8. **Money view** — losses in ₹ by owner; waterfall reconciles.
-9. **Morning briefing** — “one decision for today”.
-10. **Shopfloor TV** — the whole hall sees it.
+A play gate opens first (chapters, optional narration, Play / Skip). Each step dims the screen, cuts out the element being explained with a pulsing orange ring, and places a short callout beside it with a live count-up number. A rail at the top shows every step: click any segment to jump, ← / → to step, Space to pause, **Esc or “Skip tour” to leave at any time**.
+
+Narration is optional and free: it uses the browser's built-in speech engine (Web Speech API), preferring Google voices in Chrome. Steps wait for the sentence to finish; with narration off they advance on a reading-time timer.
+
+| # | Chapter | Step |
+|---|---|---|
+| 1–3 | Group | Four headline numbers · the 3D plant network · plants sorted behind-plan first |
+| 4 | Group | 3D India roll-up |
+| 5–6 | Plant | Where every minute of the shift went (time flow) · isometric floor map |
+| 7 | Plant | Digital twin |
+| 8–12 | A breakdown | IMM-16 trips on a heater fault · alert with evidence · supervisor assigns Maintenance in two taps · technician “I'm on it” · fixed, verified and booked |
+| 13 | Machine | 3D machine with heater zones glowing by temperature |
+| 14–15 | Money | Who owns every rupee lost (loss flow) · one decision for today |
+| 16 | Planning | 30-hour Gantt, auto-schedule runs live |
+| 17 | Shopfloor | TV playlist |
+| 18 | Explore | Back home, hand-off to free exploration |
 
 ## How the numbers stay honest
 
@@ -75,3 +81,5 @@ The simulator (`src/sim`) starts at 06:00, warms up to 11:42 and then ticks ever
 ## Visual system
 
 Colour and type follow the Lyzr brand system (logos and illustrations not used): warm greyscale from Off-white `#FAFAF9` to Black `#1F2022`, Orange `#FE4B1E` as the single accent (now marker, plan line, active nav, focus), Navy as a supporting data colour. Charts are drawn in ink tints; status hues are muted (sage, ochre, steel, brick) and appear as dots, thin edges and chips rather than large fills. Type: Inter (stand-in for Aeonik, which is licensed) for everything read, JetBrains Mono uppercase for labels and table headers. Light (Off-white) is the default theme; dark uses the Black ramp.
+
+Wherever a number has a shape, it is drawn rather than written: towers for plant output (`src/three/GroupNetwork.tsx`), flows for where time and money went, isometric blocks for the floor, rings for A × P × Q (`src/ui/diagrams.tsx`, `src/ui/charts.tsx`). Text is kept to one line per idea, with generous whitespace and a 13 px base size.

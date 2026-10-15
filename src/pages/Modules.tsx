@@ -26,12 +26,12 @@ export default function Modules() {
     <div className="mx-auto flex max-w-[1500px] flex-col gap-6 p-4 sm:p-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="overline">IMMDATA · modular SaaS by AGG Technology</div>
-          <h1 className="num mt-1 text-[34px] font-bold leading-10">Buy only the modules you need</h1>
+          <div className="eyebrow">IMMDATA · modular SaaS by AGG Technology</div>
+          <h1 className="num mt-1 text-[26px] font-bold leading-10">Buy only the modules you need</h1>
           <p className="mt-1 max-w-2xl text-[14px] text-fg2">A Core every plant gets, plus add-ons that switch on per tenant. Toggle a module and watch the sidebar, routes and screens update live — locked modules show a tasteful “Unlock” state everywhere.</p>
         </div>
         <div className="glass !rounded-[12px] px-4 py-3 text-center">
-          <div className="num text-[30px] font-bold">{on} / {MODULES.length}</div>
+          <div className="num text-[24px] font-bold">{on} / {MODULES.length}</div>
           <div className="text-[12px] text-fg3">modules enabled for Apex Polymers</div>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function Modules() {
           return (
             <motion.button key={p.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} whileHover={{ y: -3 }} onClick={() => (applyPlan(p.mods), notify({ tone: 'run', title: `${p.name} plan applied`, body: `${p.mods.length} modules · sidebar updated` }))} className={cx('glass relative flex flex-col gap-2 overflow-hidden !rounded-[14px] p-5 text-left', active && '!border-brand')}>
               {p.id === 'enterprise' && <span className="absolute right-3 top-3 rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-ink">MOST POPULAR</span>}
-              <div className="num text-[26px] font-bold">{p.name}</div>
+              <div className="num text-[20px] font-bold">{p.name}</div>
               <div className="text-[13px] text-fg2">{p.tag}</div>
               <div className="mt-1 text-[12px] text-fg3">{p.mods.length} modules · priced per connected machine / month</div>
               <div className="mt-2 flex flex-wrap gap-1">
@@ -93,7 +93,7 @@ export default function Modules() {
       </div>
       <div className="glass flex flex-wrap items-center justify-between gap-3 !rounded-[14px] p-5">
         <div>
-          <div className="num text-[20px] font-semibold">Retrofit any machine, any brand</div>
+          <div className="num text-[16px] font-semibold">Retrofit any machine, any brand</div>
           <div className="text-[13px] text-fg2">A Raspberry Pi gateway per machine reads OPC UA / EUROMAP 77 / 63 / Modbus / digital I/O · store-and-forward · Indian ERPs (TARKA, Tally, SAP B1, Zoho) · WhatsApp + SMS alerts.</div>
         </div>
         <button className="btn btn-primary" onClick={() => notify({ tone: 'run', title: 'Request sent to AGG Technology', body: 'A solutions engineer will reach out within 1 working day' })}><MessageCircle size={14} />Talk to us</button>

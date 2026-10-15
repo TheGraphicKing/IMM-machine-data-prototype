@@ -143,13 +143,13 @@ export default function Ask() {
   useEffect(() => end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }), [msgs.length]);
 
   return (
-    <div className="mx-auto flex h-full max-w-[980px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex h-full max-w-[980px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex items-center gap-3">
         <div className="grid h-11 w-11 place-items-center rounded-[12px] bg-brand/15 text-brand">
           <Sparkles size={22} />
         </div>
         <div>
-          <h1 className="num text-[30px] font-bold leading-9">Ask IMMDATA</h1>
+          <h1 className="num text-[24px] font-bold leading-9">Ask IMMDATA</h1>
           <div className="text-[13px] text-fg3">Grounded answers from your live factory data · cites scope and window · never invents numbers</div>
         </div>
       </div>
@@ -188,7 +188,7 @@ export default function Ask() {
           if (input.trim()) ask(input.trim());
         }}
       >
-        <input className="h-11 flex-1 bg-transparent px-3 text-[15px] outline-none placeholder:text-fg4" placeholder="Ask about output, downtime, money, moulds, trucks…" value={input} onChange={(e) => setInput(e.target.value)} aria-label="Ask a question" />
+        <input className="h-11 flex-1 bg-transparent px-3 text-[13.5px] outline-none placeholder:text-fg4" placeholder="Ask about output, downtime, money, moulds, trucks…" value={input} onChange={(e) => setInput(e.target.value)} aria-label="Ask a question" />
         <button className="btn btn-primary !h-10" type="submit">
           <Send size={15} />
           Ask
@@ -217,7 +217,7 @@ function Stream({ a }: { a: Answer }) {
         IMMDATA
         {!done && <span className="h-1.5 w-1.5 animate-blink rounded-full bg-brand" />}
       </div>
-      <p className="text-[15px] leading-[23px]">
+      <p className="text-[13.5px] leading-[23px]">
         {a.text.slice(0, n)}
         {!done && <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-blink bg-brand" />}
       </p>

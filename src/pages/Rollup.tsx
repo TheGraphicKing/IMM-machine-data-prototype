@@ -44,8 +44,8 @@ export default function Rollup() {
       {/* left rail */}
       <motion.aside initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.4, ease: EASE }} className="relative z-20 hidden w-[300px] shrink-0 flex-col gap-3 overflow-y-auto border-r border-line/60 p-4 lg:flex">
         <div>
-          <div className="overline">Corporate roll-up · India</div>
-          <h1 className="num text-[26px] font-bold leading-8">Where do we need help?</h1>
+          <div className="eyebrow">Corporate roll-up · India</div>
+          <h1 className="num text-[20px] font-bold leading-8">Where do we need help?</h1>
           <div className="mt-1 text-[12px] text-fg3"><LiveDot label={`Live · ${clock(w.t)}`} /></div>
         </div>
         {w.orgs.map((o) => {
@@ -54,7 +54,7 @@ export default function Rollup() {
           return (
             <div key={o.id} className="glass !rounded-[10px] p-3">
               <div className="flex items-center justify-between">
-                <span className="num text-[16px] font-bold uppercase tracking-[0.04em]">{o.name}</span>
+                <span className="num text-[14px] font-bold uppercase tracking-[0.04em]">{o.name}</span>
                 <PlanChip p={d.plan} />
               </div>
               <div className="mt-1 flex gap-3 text-[12px] text-fg3">
@@ -82,7 +82,7 @@ export default function Rollup() {
       </motion.aside>
 
       {/* map */}
-      <div className="relative min-w-0 flex-1">
+      <div data-tour="rollup-map" className="relative min-w-0 flex-1">
         {mobile ? (
           <FlatMap points={points} onSelect={setSel} />
         ) : (
@@ -111,7 +111,7 @@ export default function Rollup() {
             <div className="flex items-start justify-between">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg3">{w.org[s.u.orgId].name} · {s.u.city}</div>
-                <div className="num text-[26px] font-bold">{s.u.name}</div>
+                <div className="num text-[20px] font-bold">{s.u.name}</div>
               </div>
               <button onClick={() => setSel(null)} className="text-fg3 hover:text-fg" aria-label="Close">✕</button>
             </div>
@@ -123,7 +123,7 @@ export default function Rollup() {
               ].map(([l, v, c]) => (
                 <div key={l} className="rounded-[8px] bg-panel2 p-2.5">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-fg3">{l}</div>
-                  <div className="num text-[22px] font-bold" style={{ color: c }}>{v}</div>
+                  <div className="num text-[18px] font-bold" style={{ color: c }}>{v}</div>
                 </div>
               ))}
             </div>

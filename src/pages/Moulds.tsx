@@ -36,10 +36,10 @@ export default function Moulds() {
   const mcDone = w.machines.reduce((a, m) => a + m.mcDone, 0);
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="num text-[30px] font-bold leading-9">Mould health</h1>
+          <h1 className="num text-[24px] font-bold leading-9">Mould health</h1>
           <div className="text-[13px] text-fg3">Moulds maintained by shots · changeovers measured against standard</div>
         </div>
         <Link to="/mould-setup" className="btn btn-ghost">Mould setup queue →</Link>
@@ -55,8 +55,8 @@ export default function Moulds() {
           ['Avg change', '38 min', 'vs 30 min std', true],
         ].map(([l, v, s, warn], i) => (
           <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4">
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[26px] font-bold" style={{ color: warn ? 'rgb(var(--idle-t))' : undefined }}>{v}</div>
+            <div className="eyebrow">{l}</div>
+            <div className="num mt-1 text-[20px] font-bold" style={{ color: warn ? 'rgb(var(--idle-t))' : undefined }}>{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}
@@ -73,8 +73,8 @@ export default function Moulds() {
             return (
               <motion.div key={m.id} layout className={cx('rounded-[10px] border p-3', over ? 'border-down/50 bg-down/[0.06]' : 'border-line/70')}>
                 <div className="flex items-center justify-between">
-                  <span className="num text-[18px] font-bold">{m.code} <span className="text-[12px] font-normal text-fg3">{w.unit[m.unitId].name}</span></span>
-                  <span className="num flex items-center gap-1 text-[20px] font-bold" style={{ color: over ? 'rgb(var(--down-t))' : 'rgb(var(--mould-t))' }}>
+                  <span className="num text-[15px] font-bold">{m.code} <span className="text-[12px] font-normal text-fg3">{w.unit[m.unitId].name}</span></span>
+                  <span className="num flex items-center gap-1 text-[16px] font-bold" style={{ color: over ? 'rgb(var(--down-t))' : 'rgb(var(--mould-t))' }}>
                     <Timer size={16} />
                     {timer(el)}
                   </span>
@@ -125,7 +125,7 @@ export default function Moulds() {
               </Ring>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="num text-[17px] font-semibold">{md.id}</span>
+                  <span className="num text-[14px] font-semibold">{md.id}</span>
                   <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-fg3">{md.type === 'family' ? 'Family' : `${md.positions.length} cav`}</span>
                 </div>
                 <div className="truncate text-[12px] text-fg2">{md.name}</div>
@@ -196,7 +196,7 @@ function MouldDrawer({ id, onClose }: { id: string | null; onClose: () => void }
       {md && (
         <div className="flex flex-col gap-4 p-5 text-[13px]">
           <div>
-            <div className="num text-[24px] font-bold">{md.name}</div>
+            <div className="num text-[19px] font-bold">{md.name}</div>
             <div className="text-fg3">
               {md.serial} · {md.type === 'family' ? 'Family mould' : 'Multicavity mould'} · {md.tonnage} T min · {md.owner === 'customer' ? `customer-owned (${md.customer})` : 'own tool'}
             </div>
@@ -205,11 +205,11 @@ function MouldDrawer({ id, onClose }: { id: string | null; onClose: () => void }
             </div>
           </div>
           <div>
-            <div className="overline mb-2">Cavity map · click to block / unblock</div>
+            <div className="eyebrow mb-2">Cavity map · click to block / unblock</div>
             <div className="grid gap-2 rounded-[12px] border border-line/70 bg-[linear-gradient(135deg,rgb(var(--panel3)),rgb(var(--panel2)))] p-4" style={{ gridTemplateColumns: `repeat(${Math.min(4, md.positions.length)}, minmax(0,1fr))` }}>
               {md.positions.map((p, i) => (
                 <motion.button key={i} whileTap={{ scale: 0.95 }} onClick={() => (md.blocked[i] ? toggle(i, 'Cavity repaired') : setBlockFor(i))} className={cx('relative grid h-20 place-items-center rounded-[10px] border-2 transition', md.blocked[i] ? 'border-down bg-down/15' : 'border-run/50 bg-run/10 hover:border-run')}>
-                  <span className="num text-[22px] font-bold">{p.code}</span>
+                  <span className="num text-[18px] font-bold">{p.code}</span>
                   <span className="absolute bottom-1.5 text-[10px] font-semibold uppercase" style={{ color: md.blocked[i] ? 'rgb(var(--down-t))' : 'rgb(var(--run-t))' }}>
                     {md.blocked[i] ? 'Blocked' : 'Active'}
                   </span>
@@ -232,13 +232,13 @@ function MouldDrawer({ id, onClose }: { id: string | null; onClose: () => void }
             <div className="mt-2 text-fg3">Parts per shot: <b className="num text-fg">{md.blocked.filter((b) => !b).length}</b> of {md.positions.length} · blocked cavities show as speed & cavity loss</div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">Shots since PM</div><div className="num text-[20px] font-bold">{fmt(md.shotsSincePM)} / {fmt(md.pmInterval)}</div></div>
-            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">Lifetime shots</div><div className="num text-[20px] font-bold">{fmt(md.lifetime)}</div></div>
-            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">Std cycle</div><div className="num text-[20px] font-bold">{md.stdCycle.toFixed(1)} s</div></div>
-            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="overline">Std change</div><div className="num text-[20px] font-bold">{md.stdChangeMin} min</div></div>
+            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">Shots since PM</div><div className="num text-[16px] font-bold">{fmt(md.shotsSincePM)} / {fmt(md.pmInterval)}</div></div>
+            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">Lifetime shots</div><div className="num text-[16px] font-bold">{fmt(md.lifetime)}</div></div>
+            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">Std cycle</div><div className="num text-[16px] font-bold">{md.stdCycle.toFixed(1)} s</div></div>
+            <div className="rounded-[8px] bg-panel2/70 p-3"><div className="eyebrow">Std change</div><div className="num text-[16px] font-bold">{md.stdChangeMin} min</div></div>
           </div>
           <div>
-            <div className="overline mb-2">Allowed machines</div>
+            <div className="eyebrow mb-2">Allowed machines</div>
             {allowed.map((x) => (
               <div key={x.id} className="flex justify-between border-b border-line/50 py-1.5">
                 <span className="num font-semibold">{x.code} · {w.unit[x.unitId].name}</span>
@@ -247,7 +247,7 @@ function MouldDrawer({ id, onClose }: { id: string | null; onClose: () => void }
             ))}
           </div>
           <div>
-            <div className="overline mb-2">History</div>
+            <div className="eyebrow mb-2">History</div>
             {[
               [`${w.day - 2} Oct`, 'PM completed · checklist 14/14 · V. Shetty'],
               [`${w.day - 6} Oct`, 'Mould change · 34 min (std 30)'],

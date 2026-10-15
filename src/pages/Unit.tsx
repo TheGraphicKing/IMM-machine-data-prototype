@@ -7,8 +7,9 @@ import { aggMachines, availability, derive, downtimeByReason, hourly, machineKpi
 import { hourIdx, PLAN_FACTOR } from '../sim/engine';
 import { SHIFT_LEN, SHIFT_WINDOWS, shiftOf, shiftStartOf } from '../sim/catalog';
 import { clock, cx, fmt, pct } from '../lib/format';
-import { Bar, EASE, Kpi, LiveDot, Panel, Segmented, StatePill, TimelineBar, Ticker, planColor, planText, stageLabel } from '../ui/primitives';
-import { HourlyBars, Pareto } from '../ui/charts';
+import { EASE, LiveDot, Panel, Segmented, StatePill, TimelineBar, Ticker, planColor, planText, stageLabel } from '../ui/primitives';
+import { ApqRings, HourlyBars, Pareto } from '../ui/charts';
+import { IsoFloor, TimeFlow } from '../ui/diagrams';
 import MachineTile, { machineNote } from '../ui/MachineTile';
 import LogReason from '../ui/LogReason';
 import { notify } from '../shell/Toasts';
@@ -32,7 +33,7 @@ export default function Unit({ view }: { view: 'overview' | 'timeline' }) {
   const sh = shiftOf(w.t);
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 text-[13px] text-fg3">
@@ -40,7 +41,7 @@ export default function Unit({ view }: { view: 'overview' | 'timeline' }) {
             <span className="mx-1 h-3.5 w-px bg-line" />
             <LiveDot label={`Live · Shift ${sh} ${SHIFT_WINDOWS[sh]}`} />
           </div>
-          <motion.h1 layoutId={`unit-title-${u.id}`} className="num mt-1 text-[30px] font-bold leading-9">
+          <motion.h1 layoutId={`unit-title-${u.id}`} className="num mt-1 text-[24px] font-bold leading-9">
             {u.name}
           </motion.h1>
           <div className="text-[13px] text-fg3">
@@ -70,7 +71,6 @@ export default function Unit({ view }: { view: 'overview' | 'timeline' }) {
 
 function Overview({ ms, A, D, need, unitId }: { ms: Machine[]; A: ReturnType<typeof aggMachines>; D: ReturnType<typeof derive>; need: number; unitId: string }) {
   const w = useWorld();
-  const nav = useNavigate();
   const [filter, setFilter] = useState<'all' | 'down' | 'idle' | 'behind' | 'mc'>('all');
   const [logFor, setLogFor] = useState<string | null>(null);
   const h = hourly(w, ms);
@@ -96,131 +96,112 @@ function Overview({ ms, A, D, need, unitId }: { ms: Machine[]; A: ReturnType<typ
   }).length;
   const kwhPart = A.good ? A.kwh / A.good : 0;
 
+  const [view, setView] = useState<'map' | 'tiles'>('map');
+  const shifts = [{ label: `Shift ${shiftOf(w.t)} · live`, oee: D.oee, live: true }, ...prev.slice(0, 3).map((p) => ({ label: p.label, oee: p.oee, live: false }))];
+  void alerts;
+  void kwhPart;
+  void PLAN_FACTOR;
+  void SHIFT_LEN;
+  void shiftElapsed;
   return (
     <>
-      <div className="glass grid grid-cols-2 gap-x-6 gap-y-5 !rounded-[12px] p-5 md:grid-cols-3 xl:grid-cols-5">
-        <Kpi
-          label={`Output vs plan · to ${clock(w.t)}`}
-          value={<Ticker value={A.good} format={fmt} />}
-          unit={`/ ${fmt(A.planParts)}`}
-          bar={{ v: D.plan, tone: planColor(D.plan) }}
-          sub={
-            <>
-              <b className="num" style={{ color: planText(D.plan) }}>{pct(D.plan)}</b> · Shift plan {fmt(A.shiftPlan)} · needs <b className="num text-fg">{fmt(need)}</b> / h to close
-            </>
-          }
-        />
-        <Kpi label="OEE" value={<Ticker value={D.oee} format={(n) => n.toFixed(1)} />} unit="%" sub="Target 75%">
-          <div className="mt-1 grid grid-cols-3 gap-2">
-            {[
-              ['Availability', D.A],
-              ['Performance', D.P],
-              ['Quality', D.Q],
-            ].map(([l, v]) => (
-              <div key={l as string}>
-                <div className="flex justify-between text-[10px] text-fg3">
-                  <span>{(l as string).slice(0, 5)}</span>
-                  <span className="num font-semibold text-fg2">{(v as number).toFixed(0)}</span>
-                </div>
-                <Bar v={v as number} h={4} />
-              </div>
-            ))}
-          </div>
-        </Kpi>
-        <Kpi label="Rejection" value={<Ticker value={D.rej} format={(n) => n.toFixed(1)} />} unit="%" tone={D.rej > 3 ? 'down' : null} sub={`${fmt(A.bad)} parts · limit 3.0%`} onClick={() => nav('/records')} />
-        <Kpi label="Cycle time vs std" value={<>{D.cycleDev >= 0 ? '+' : ''}{D.cycleDev.toFixed(1)}</>} unit="%" tone={D.cycleDev > 5 ? 'down' : D.cycleDev > 3 ? 'idle' : null} sub={`${A.overCycle} machines over +5%`} />
-        <Kpi label="Energy" value={<Ticker value={A.kwh} format={fmt} />} unit="kWh" sub={`${kwhPart.toFixed(3)} kWh / part`} onClick={() => nav('/energy')} />
+      {/* four numbers, no boxes */}
+      <div data-tour="unit-kpis" className="grid grid-cols-2 gap-x-8 gap-y-6 lg:grid-cols-4">
+        {[
+          { l: 'Output vs plan', v: <Ticker value={D.plan} format={(n) => `${n.toFixed(1)}%`} />, s: `${fmt(A.good)} of ${fmt(A.planParts)} parts`, dot: planColor(D.plan) },
+          { l: 'To close the shift', v: <Ticker value={need} format={(n) => fmt(n)} />, s: 'parts per hour needed' },
+          { l: 'Rejects', v: <Ticker value={D.rej} format={(n) => `${n.toFixed(1)}%`} />, s: `${fmt(A.bad)} parts · limit 3%`, dot: D.rej > 3 ? 'rgb(var(--down))' : undefined },
+          { l: 'Cycle vs standard', v: `${D.cycleDev >= 0 ? '+' : ''}${D.cycleDev.toFixed(1)}%`, s: `${A.overCycle} machines over +5%` },
+        ].map((k, i) => (
+          <motion.div key={k.l} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="flex flex-col gap-1">
+            <span className="eyebrow flex items-center gap-1.5">
+              {k.dot && <span className="h-1.5 w-1.5 rounded-full" style={{ background: k.dot }} />}
+              {k.l}
+            </span>
+            <span className="text-[32px] font-normal leading-[38px] tracking-[-0.035em]">{k.v}</span>
+            <span className="text-[12px] text-fg3">{k.s}</span>
+          </motion.div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="flex min-w-0 flex-col gap-4">
-          <Panel title="Hourly output vs plan" sub={<span className="inline-flex flex-wrap gap-x-4"><span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-fg/30" />Actual</span><span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-down/50" />Below 90% of plan</span><span>Good parts per shop-floor hour</span></span>}>
-            <HourlyBars out={h.out} planH={h.planH} labels={labels} current={hi} frac={(w.t - s0 - hi * 3600) / 3600} height={220} />
-          </Panel>
+      {/* why OEE is what it is */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[400px_minmax(0,1fr)]">
+        <Panel title="OEE" sub="Availability × performance × quality">
+          <div data-tour="unit-oee" className="flex justify-center py-2">
+            <ApqRings A={D.A} P={D.P} Q={D.Q} oee={D.oee} size={140} />
+          </div>
+        </Panel>
+        <Panel title="Where the shift's time went" sub="Every planned machine-minute, traced to what it produced">
+          <div data-tour="unit-flow">
+            <TimeFlow a={A} height={250} />
+          </div>
+        </Panel>
+      </div>
 
-          <Panel
-            title={`Machines · ${A.run} running · ${A.idle} idle · ${A.mc} mould change · ${A.down} down`}
-            right={
-              <div className="flex flex-wrap gap-1.5">
+      {/* the floor */}
+      <Panel
+        title="The floor, live"
+        sub={`${A.run} running · ${A.idle} idle · ${A.mc} mould change · ${A.down} down · block height = output vs target`}
+        right={<Segmented<'map' | 'tiles'> size="sm" options={[{ v: 'map', l: 'Map' }, { v: 'tiles', l: 'Tiles' }]} value={view} onChange={setView} />}
+      >
+        <div data-tour="unit-floor">
+          {view === 'map' ? (
+            <IsoFloor w={w} ms={ms} />
+          ) : (
+            <>
+              <div className="mb-4 flex flex-wrap gap-1.5">
                 {([
                   ['all', `All ${ms.length}`],
                   ['down', `Down ${A.down}`],
                   ['idle', `Idle ${A.idle}`],
-                  ['behind', `Behind target ${behind}`],
+                  ['behind', `Behind ${behind}`],
                   ['mc', `Mould change ${A.mc}`],
                 ] as const).map(([k, l]) => (
-                  <button key={k} className={cx('chip !h-7', filter === k && 'chip-on')} onClick={() => setFilter(k)}>
+                  <button key={k} className={cx('chip', filter === k && 'chip-on')} onClick={() => setFilter(k)}>
                     {l}
                   </button>
                 ))}
               </div>
-            }
-          >
-            <motion.div layout className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-              {sorted.map(({ m }, i) => (
-                <MachineTile key={m.id} w={w} m={m} i={i} />
-              ))}
-            </motion.div>
-            {sorted.length === 0 && <div className="py-8 text-center text-[13px] text-fg3">No machines match this filter right now.</div>}
-          </Panel>
-        </div>
-
-        <div className="flex min-w-0 flex-col gap-4">
-          <Panel title="Downtime by reason" sub={`${Math.round(pareto.total / 60)} min this shift · coloured by owning team`}>
-            <Pareto rows={rows} />
-            {noReason.length > 0 && (
-              <button onClick={() => setLogFor(noReason[0].id)} className="mt-3 w-full rounded-md bg-down/10 px-3 py-2 text-left text-[12px] font-semibold text-down-t transition hover:bg-down/15">
-                {noReason.length} stop{noReason.length > 1 ? 's have' : ' has'} no reason logged · Log reason →
-              </button>
-            )}
-          </Panel>
-          <Panel title="Shift comparison" sub="Live shift vs previous 3 shifts">
-            <table className="w-full text-[13px]">
-              <thead>
-                <tr className="text-left text-[11px] uppercase tracking-[0.08em] text-fg3">
-                  <th className="pb-2 font-semibold">Shift</th>
-                  <th className="pb-2 text-right font-semibold">Output</th>
-                  <th className="pb-2 text-right font-semibold">OEE</th>
-                  <th className="pb-2 text-right font-semibold">Rej</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-t border-line/60">
-                  <td className="py-2 font-semibold text-brand">Shift {shiftOf(w.t)} today (live)</td>
-                  <td className="num py-2 text-right font-semibold">{fmt(A.good)}</td>
-                  <td className="num py-2 text-right font-semibold">{pct(D.oee)}</td>
-                  <td className="num py-2 text-right font-semibold" style={{ color: D.rej > 3 ? 'rgb(var(--down-t))' : undefined }}>{pct(D.rej)}</td>
-                </tr>
-                {prev.slice(0, 3).map((s) => (
-                  <tr key={s.label} className="border-t border-line/60">
-                    <td className="py-2 text-fg2">{s.label}</td>
-                    <td className="num py-2 text-right">{fmt(s.out)}</td>
-                    <td className="num py-2 text-right">{pct(s.oee)}</td>
-                    <td className="num py-2 text-right" style={{ color: s.rej > 3 ? 'rgb(var(--down-t))' : undefined }}>{pct(s.rej)}</td>
-                  </tr>
+              <motion.div layout className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+                {sorted.map(({ m }, i) => (
+                  <MachineTile key={m.id} w={w} m={m} i={i} />
                 ))}
-              </tbody>
-            </table>
-            <div className="mt-2 text-[11px] text-fg3">Live shift is {Math.round((shiftElapsed(w) / SHIFT_LEN) * 100)}% through · full-shift plan {fmt(A.shiftPlan)} at {Math.round(PLAN_FACTOR * 100)}% of standard</div>
-          </Panel>
-          <Panel title="Open alerts" right={<Link to="/alerts" className="text-[12px] font-semibold text-brand hover:underline">All →</Link>}>
-            <div className="flex flex-col gap-1">
-              {alerts.length === 0 && <div className="py-4 text-center text-[13px] text-fg3">All clear · No open alerts for this unit</div>}
-              {alerts.map((a) => (
-                <button key={a.id} onClick={() => nav(a.machineId ? `/machine/${a.machineId}` : '/alerts')} className="flex gap-2.5 rounded-md p-1.5 text-left transition hover:bg-panel3/60">
-                  <span className="w-1 shrink-0 rounded-full" style={{ background: a.severity === 'critical' ? 'rgb(var(--down))' : a.severity === 'warning' ? 'rgb(var(--idle))' : 'rgb(var(--mould))' }} />
-                  <span className="min-w-0">
-                    <span className="num text-[12px] font-semibold text-fg3">
-                      {a.machineId ? w.machine[a.machineId].code : 'UNIT'} · {clock(a.t)}
-                    </span>
-                    <span className="block text-[13px] leading-[18px]">{a.title}</span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </Panel>
+              </motion.div>
+            </>
+          )}
         </div>
+      </Panel>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <Panel title="Output by hour" sub="Good parts per hour against plan">
+          <HourlyBars out={h.out} planH={h.planH} labels={labels} current={hi} frac={(w.t - s0 - hi * 3600) / 3600} height={200} />
+        </Panel>
+        <Panel title="Why machines stopped" sub={`${Math.round(pareto.total / 60)} machine-minutes this shift`}>
+          <div data-tour="unit-pareto">
+            <Pareto rows={rows.slice(0, 5)} />
+          </div>
+          {noReason.length > 0 && (
+            <button onClick={() => setLogFor(noReason[0].id)} className="mt-4 w-full rounded-[10px] bg-down/[0.07] px-3 py-2 text-left text-[12px] text-down-t transition hover:bg-down/10">
+              {noReason.length} stop{noReason.length > 1 ? 's have' : ' has'} no reason · log it →
+            </button>
+          )}
+        </Panel>
       </div>
+
+      <Panel title="This shift against the last three" sub="OEE">
+        <div className="flex flex-col gap-3">
+          {shifts.map((x) => (
+            <div key={x.label} className="grid grid-cols-[150px_minmax(0,1fr)_52px] items-center gap-4">
+              <span className={cx('text-[12px]', x.live ? 'text-fg' : 'text-fg3')}>{x.label}</span>
+              <div className="relative h-1.5 rounded-full bg-line/60">
+                <motion.div className="absolute inset-y-0 left-0 rounded-full" style={{ background: x.live ? 'rgb(var(--brand))' : 'rgb(var(--fg) / 0.35)' }} initial={{ width: 0 }} animate={{ width: `${x.oee}%` }} transition={{ duration: 0.8, ease: EASE }} />
+                <div className="absolute -bottom-1 -top-1 w-px bg-fg3" style={{ left: '75%' }} />
+              </div>
+              <span className="num text-right text-[13px]">{x.oee.toFixed(1)}%</span>
+            </div>
+          ))}
+        </div>
+      </Panel>
       {logFor && <LogReason machineId={logFor} open={!!logFor} onClose={() => setLogFor(null)} />}
     </>
   );
@@ -247,10 +228,10 @@ function Timeline({ ms, D, A }: { ms: Machine[]; D: ReturnType<typeof derive>; A
     <div className="glass relative !rounded-[12px]">
       <div className="flex flex-wrap items-center gap-3 border-b border-line/60 px-4 py-3">
         <div className="flex items-center gap-4 text-[13px]">
-          <span>PLAN <b className="num text-[16px]" style={{ color: planText(D.plan) }}>{pct(D.plan)}</b></span>
-          <span>OEE <b className="num text-[16px]">{pct(D.oee)}</b></span>
-          <span>REJECT <b className="num text-[16px]">{pct(D.rej)}</b></span>
-          <span>DOWN <b className="num text-[16px] text-down-t">{A.down} / {A.machines}</b></span>
+          <span>PLAN <b className="num text-[14px]" style={{ color: planText(D.plan) }}>{pct(D.plan)}</b></span>
+          <span>OEE <b className="num text-[14px]">{pct(D.oee)}</b></span>
+          <span>REJECT <b className="num text-[14px]">{pct(D.rej)}</b></span>
+          <span>DOWN <b className="num text-[14px] text-down-t">{A.down} / {A.machines}</b></span>
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <select className="input !h-8 !w-auto !text-[13px]" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Sort">
@@ -316,7 +297,7 @@ function Timeline({ ms, D, A }: { ms: Machine[]; D: ReturnType<typeof derive>; A
                 onClick={() => nav(`/machine/${m.id}`)}
               >
                 <div className="min-w-0">
-                  <div className="num text-[16px] font-semibold" style={{ color: m.state === 'DOWN' ? 'rgb(var(--down-t))' : undefined }}>
+                  <div className="num text-[14px] font-semibold" style={{ color: m.state === 'DOWN' ? 'rgb(var(--down-t))' : undefined }}>
                     {m.code}
                   </div>
                   <div className="truncate text-[11px]" style={{ color: n.tone ? `rgb(var(--${n.tone}-t))` : 'rgb(var(--fg3))' }}>
@@ -340,7 +321,7 @@ function Timeline({ ms, D, A }: { ms: Machine[]; D: ReturnType<typeof derive>; A
                   onSeg={(s, e) => setTip(s && e ? { s, m, x: e.clientX, y: e.clientY } : null)}
                 />
                 <div className="text-right">
-                  <div className="num text-[15px] font-semibold" style={{ color: ctDev > 5 ? 'rgb(var(--down-t))' : undefined }}>
+                  <div className="num text-[13.5px] font-semibold" style={{ color: ctDev > 5 ? 'rgb(var(--down-t))' : undefined }}>
                     {k.ct.toFixed(1)} s
                   </div>
                   <div className="num text-[11px] text-fg3">
@@ -349,7 +330,7 @@ function Timeline({ ms, D, A }: { ms: Machine[]; D: ReturnType<typeof derive>; A
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="num text-[15px] font-semibold">{fmt(k.good)}</div>
+                  <div className="num text-[13.5px] font-semibold">{fmt(k.good)}</div>
                   <div className="num text-[11px]" style={{ color: planText(p) }}>
                     {p.toFixed(0)}% target
                   </div>

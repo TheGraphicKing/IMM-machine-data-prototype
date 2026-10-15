@@ -27,10 +27,10 @@ export default function Energy() {
   const angle = -120 + gaugePct * 240;
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div>
         <div className="text-[13px] text-fg3">Manesar U1 · Energy & utilities</div>
-        <h1 className="num text-[30px] font-bold leading-9">₹ of power per part, peaks avoided</h1>
+        <h1 className="num text-[24px] font-bold leading-9">₹ of power per part, peaks avoided</h1>
       </div>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         {[
@@ -41,8 +41,8 @@ export default function Energy() {
           ['Power factor', '0.93', 'target ≥ 0.95 · capacitor bank 2 off', true],
         ].map(([l, v, s, warn], i) => (
           <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4">
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[26px] font-bold" style={{ color: warn ? 'rgb(var(--idle-t))' : undefined }}>{v}</div>
+            <div className="eyebrow">{l}</div>
+            <div className="num mt-1 text-[20px] font-bold" style={{ color: warn ? 'rgb(var(--idle-t))' : undefined }}>{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}
@@ -60,7 +60,7 @@ export default function Energy() {
               <motion.line x1="110" y1="120" x2="110" y2="58" stroke="rgb(var(--fg))" strokeWidth="3" strokeLinecap="round" style={{ originX: '110px', originY: '120px' }} animate={{ rotate: angle }} transition={{ duration: 1, ease: EASE }} />
               <circle cx="110" cy="120" r="6" fill="rgb(var(--fg))" />
             </svg>
-            <div className="num -mt-4 text-[36px] font-bold">{fmt(kva)} <span className="text-[16px] text-fg3">kVA</span></div>
+            <div className="num -mt-4 text-[28px] font-bold">{fmt(kva)} <span className="text-[14px] text-fg3">kVA</span></div>
             <div className="text-[12px] text-fg3">{(gaugePct * 100).toFixed(0)}% of contract · peak today {fmt(peak)} kVA</div>
           </div>
           <div className="mt-3">
@@ -121,8 +121,8 @@ function PowerFlow({ w, kw, util }: { w: ReturnType<typeof useWorld>; kw: number
         <div className="mt-1 text-[11px] font-semibold">Grid 11 kV</div>
       </div>
       <div className="absolute left-[35%] top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[10px] border border-line2 bg-panel2 px-3 py-2 text-center">
-        <div className="overline">Transformer</div>
-        <div className="num text-[22px] font-bold">{fmt(total)} kW</div>
+        <div className="eyebrow">Transformer</div>
+        <div className="num text-[18px] font-bold">{fmt(total)} kW</div>
       </div>
       {nodes.map((n, i) => (
         <div key={n.l} className="absolute right-0 flex w-[160px] items-center justify-between rounded-[8px] border border-line/70 bg-panel/80 px-2.5 py-1.5 text-[12px]" style={{ top: `calc(${((30 + i * (220 / (nodes.length - 1))) / 280) * 100}% - 15px)` }}>

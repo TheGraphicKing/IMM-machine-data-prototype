@@ -79,13 +79,13 @@ export default function Records() {
   const rows = filtered.slice(page * PAGE, page * PAGE + PAGE);
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="text-[13px] text-fg3">
             <Link to="/home" className="hover:text-fg">Corporate</Link> / {w.org[unit.orgId].name} / <Link to={`/unit/${unit.id}`} className="hover:text-fg">{unit.name}</Link>
           </div>
-          <h1 className="num mt-1 text-[30px] font-bold leading-9">Production records</h1>
+          <h1 className="num mt-1 text-[24px] font-bold leading-9">Production records</h1>
           <div className="text-[13px] text-fg3">Per-part traceability · weight vs tolerance on every row · click a part for the shot’s process data</div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -136,8 +136,8 @@ export default function Records() {
           ['Top machine', `${top.code} · ${fmt(top.bad)}`, 'NOT OK parts'],
         ].map(([l, v, s, red], i) => (
           <motion.div key={l as string} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="glass !rounded-[10px] p-4">
-            <div className="overline">{l}</div>
-            <div className="num mt-1 text-[26px] font-bold" style={{ color: red ? 'rgb(var(--down-t))' : undefined }}>{v}</div>
+            <div className="eyebrow">{l}</div>
+            <div className="num mt-1 text-[20px] font-bold" style={{ color: red ? 'rgb(var(--down-t))' : undefined }}>{v}</div>
             <div className="text-[12px] text-fg3">{s}</div>
           </motion.div>
         ))}
@@ -228,7 +228,7 @@ function PartDrawer({ r, onClose, onStatus }: { r: PartRec | null; onClose: () =
     <Drawer open={!!r} onClose={() => (onClose(), setChanging(false))} title="Part" width={520}>
       <div className="flex flex-col gap-4 p-5">
         <div>
-          <div className="font-mono text-[18px] font-semibold">{r.serial}</div>
+          <div className="font-mono text-[15px] font-semibold">{r.serial}</div>
           <div className="text-[13px] text-fg3">
             {m.code} · Shift {r.shift} · {clock(r.t, true)} · cavity {r.cavity}
           </div>
@@ -236,28 +236,28 @@ function PartDrawer({ r, onClose, onStatus }: { r: PartRec | null; onClose: () =
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="glass !rounded-[8px] p-3">
-            <div className="overline">Weight</div>
-            <div className="num text-[24px] font-bold" style={{ color: Math.abs(r.weight - r.nominal) > r.tol ? 'rgb(var(--down-t))' : undefined }}>{fmt1(r.weight)} g</div>
+            <div className="eyebrow">Weight</div>
+            <div className="num text-[19px] font-bold" style={{ color: Math.abs(r.weight - r.nominal) > r.tol ? 'rgb(var(--down-t))' : undefined }}>{fmt1(r.weight)} g</div>
             <div className="text-[12px] text-fg3">std {fmt1(r.nominal)} ± {r.tol}</div>
           </div>
           <div className="glass !rounded-[8px] p-3">
-            <div className="overline">Reject reason</div>
-            <div className="text-[15px] font-semibold">{r.reason || '—'}</div>
+            <div className="eyebrow">Reject reason</div>
+            <div className="text-[13.5px] font-semibold">{r.reason || '—'}</div>
             <div className="text-[12px] text-fg3">{r.ok ? 'Passed weight check' : r.auto ? `Auto: weight ${r.weight > r.nominal ? 'high' : 'low'}` : 'Manual · QC inspector'}</div>
           </div>
           <div className="glass !rounded-[8px] p-3">
-            <div className="overline">Job</div>
-            <div className="num text-[18px] font-semibold">{m.wo}</div>
+            <div className="eyebrow">Job</div>
+            <div className="num text-[15px] font-semibold">{m.wo}</div>
             <div className="text-[12px] text-fg3">{p?.customer}</div>
           </div>
           <div className="glass !rounded-[8px] p-3">
-            <div className="overline">Mould</div>
-            <div className="num text-[18px] font-semibold">{r.mouldId}</div>
+            <div className="eyebrow">Mould</div>
+            <div className="num text-[15px] font-semibold">{r.mouldId}</div>
             <div className="truncate text-[12px] text-fg3">{p?.name}</div>
           </div>
         </div>
         <div>
-          <div className="overline mb-2">Process data at this shot</div>
+          <div className="eyebrow mb-2">Process data at this shot</div>
           <div className="flex flex-col">
             {params.map((x) => {
               const bad = x.v < x.lo || x.v > x.hi;
@@ -276,7 +276,7 @@ function PartDrawer({ r, onClose, onStatus }: { r: PartRec | null; onClose: () =
         <div className="text-[12px] text-fg3">Trace: material lot PP {2609}-{114 + (r.shot % 9)} · operator {m.operator} · inspector QA · N. Kapoor · dispatch pending</div>
         {changing ? (
           <div className="glass flex flex-col gap-2 !rounded-[10px] p-3">
-            <div className="overline">Change status · reason mandatory</div>
+            <div className="eyebrow">Change status · reason mandatory</div>
             <div className="flex flex-wrap gap-1.5">
               {(r.ok ? DEFECTS : ['Re-inspected OK', 'Gauge error', 'Customer concession']).map((d) => (
                 <button key={d} className={cx('chip', reason === d && 'chip-on')} onClick={() => setReason(d)}>
@@ -433,7 +433,7 @@ function AddManual({ open, onClose, ms, onAdd }: { open: boolean; onClose: () =>
       <div className="flex flex-col gap-3 p-5 text-[13px]">
         <div className="text-fg3">For stopped / offline windows only. Manual records carry a MANUAL badge everywhere and stay out of SPC.</div>
         <label className="flex flex-col gap-1">
-          <span className="overline">Machine *</span>
+          <span className="eyebrow">Machine *</span>
           <select className="input" value={mid} onChange={(e) => setMid(e.target.value)}>
             {ms.map((x) => (
               <option key={x.id} value={x.id}>{x.code} · {x.state === 'RUN' ? 'running' : 'stopped'}</option>
@@ -442,21 +442,21 @@ function AddManual({ open, onClose, ms, onAdd }: { open: boolean; onClose: () =>
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1">
-            <span className="overline">Start</span>
+            <span className="eyebrow">Start</span>
             <input className="input" defaultValue="10:40" />
           </label>
           <label className="flex flex-col gap-1">
-            <span className="overline">End</span>
+            <span className="eyebrow">End</span>
             <input className="input" defaultValue="11:10" />
           </label>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1">
-            <span className="overline">OK count *</span>
+            <span className="eyebrow">OK count *</span>
             <input className="input" type="number" value={okN} onChange={(e) => setOkN(+e.target.value)} />
           </label>
           <label className="flex flex-col gap-1">
-            <span className="overline">NOT OK count *</span>
+            <span className="eyebrow">NOT OK count *</span>
             <input className="input" type="number" value={ngN} onChange={(e) => setNgN(+e.target.value)} />
           </label>
         </div>

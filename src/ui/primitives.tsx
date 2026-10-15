@@ -64,15 +64,15 @@ export function Panel({
   return (
     <section id={id} ref={ref} onMouseMove={onMove} onClick={onClick} style={style} className={cx('glass spotlight flex min-w-0 flex-col', onClick && 'cursor-pointer', className)}>
       {(title || right) && (
-        <header className="flex items-start justify-between gap-3 px-4 pt-3.5">
+        <header className="flex items-start justify-between gap-3 px-6 pt-5">
           <div className="min-w-0">
-            {title && <h3 className="num truncate text-[18px] font-semibold leading-6 text-fg">{title}</h3>}
-            {sub && <div className="mt-0.5 text-[12px] text-fg3">{sub}</div>}
+            {title && <h3 className="num truncate text-[15px] font-semibold leading-6 text-fg">{title}</h3>}
+            {sub && <div className="mt-1 text-[12px] text-fg3">{sub}</div>}
           </div>
           {right && <div className="flex shrink-0 items-center gap-2">{right}</div>}
         </header>
       )}
-      <div className={cx('min-h-0 flex-1 p-4', !!title && 'pt-3', bodyClass)}>{children}</div>
+      <div className={cx('min-h-0 flex-1 p-6', !!title && 'pt-4', bodyClass)}>{children}</div>
     </section>
   );
 }
@@ -81,7 +81,7 @@ export function StatePill({ s, label, since, size = 'sm', className }: { s: MSta
   const v = STATE_META[s].v;
   return (
     <span
-      className={cx('inline-flex items-center gap-1.5 whitespace-nowrap rounded-[3px] font-semibold uppercase tracking-[0.06em]', size === 'sm' && 'h-[22px] px-2 text-[11px]', size === 'md' && 'h-7 px-2.5 text-[12px]', size === 'lg' && 'h-9 px-3 text-[15px]', className)}
+      className={cx('inline-flex items-center gap-1.5 whitespace-nowrap rounded-[3px] font-semibold uppercase tracking-[0.06em]', size === 'sm' && 'h-[22px] px-2 text-[11px]', size === 'md' && 'h-7 px-2.5 text-[12px]', size === 'lg' && 'h-9 px-3 text-[13.5px]', className)}
       style={{ background: `rgb(var(--${v}) / 0.16)`, color: `rgb(var(--${v}-t, var(--${v})))` }}
     >
       <span className="relative inline-flex h-1.5 w-1.5">
@@ -186,9 +186,9 @@ export function Kpi({
 }) {
   return (
     <motion.div whileHover={onClick ? { y: -2 } : undefined} onClick={onClick} className={cx('flex min-w-0 flex-col gap-1.5', onClick && 'cursor-pointer', className)} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
-      <div className={cx('overline truncate', dark && '')}>{label}</div>
+      <div className={cx('eyebrow truncate', dark && '')}>{label}</div>
       <div className="flex flex-wrap items-baseline gap-x-1.5">
-        <span className="num whitespace-nowrap text-[30px] font-normal leading-9" style={tone ? { color: `rgb(var(--${tone}-t))` } : undefined}>
+        <span className="num whitespace-nowrap text-[24px] font-normal leading-9" style={tone ? { color: `rgb(var(--${tone}-t))` } : undefined}>
           {value}
         </span>
         {unit && <span className="num whitespace-nowrap text-[14px] text-fg3">{unit}</span>}
@@ -330,7 +330,7 @@ export function Drawer({ open, onClose, children, width = 560, title }: { open: 
             aria-modal
           >
             <div className="flex h-14 shrink-0 items-center justify-between border-b border-line/60 px-5">
-              <div className="num text-[18px] font-semibold">{title}</div>
+              <div className="num text-[15px] font-semibold">{title}</div>
               <button className="btn btn-ghost !h-8 !w-8 !p-0" onClick={onClose} aria-label="Close">
                 <X size={16} />
               </button>
@@ -367,7 +367,7 @@ export function Modal({ open, onClose, children, width = 560, title }: { open: b
           >
             {title && (
               <div className="flex h-14 items-center justify-between border-b border-line/60 px-5">
-                <div className="num text-[20px] font-semibold">{title}</div>
+                <div className="num text-[16px] font-semibold">{title}</div>
                 <button className="btn btn-ghost !h-8 !w-8 !p-0" onClick={onClose} aria-label="Close">
                   <X size={16} />
                 </button>
@@ -382,7 +382,7 @@ export function Modal({ open, onClose, children, width = 560, title }: { open: b
 }
 
 export function Overline({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cx('overline', className)}>{children}</div>;
+  return <div className={cx('eyebrow', className)}>{children}</div>;
 }
 
 export function Bar({ v, tone = 'rgb(var(--fg2))', h = 6, className, bg = 'rgb(var(--line) / 0.7)' }: { v: number; tone?: string; h?: number; className?: string; bg?: string }) {
@@ -425,7 +425,7 @@ export function LiveDot({ className, label }: { className?: string; label?: Reac
 export function Empty({ title, body, action }: { title: string; body?: string; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-10 text-center">
-      <div className="num text-[18px] font-semibold">{title}</div>
+      <div className="num text-[15px] font-semibold">{title}</div>
       {body && <div className="max-w-sm text-[13px] text-fg3">{body}</div>}
       {action}
     </div>
@@ -439,7 +439,7 @@ export function Skeleton({ className }: { className?: string }) {
 export function PhoneFrame({ children, time, className, label }: { children: ReactNode; time: string; className?: string; label?: string }) {
   return (
     <div className={cx('flex flex-col items-center gap-3', className)}>
-      {label && <div className="overline">{label}</div>}
+      {label && <div className="eyebrow">{label}</div>}
       <div className="relative h-[720px] w-[360px] shrink-0 rounded-[44px] border border-line2 bg-[#141517] p-[10px] shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
         <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[36px] bg-bg">
           <div className="flex h-9 shrink-0 items-center justify-between px-6 text-[12px] font-semibold text-fg">
@@ -458,7 +458,7 @@ export function PhoneFrame({ children, time, className, label }: { children: Rea
 export function SectionTitle({ children, right, className }: { children: ReactNode; right?: ReactNode; className?: string }) {
   return (
     <div className={cx('flex items-end justify-between gap-3', className)}>
-      <h2 className="num text-[22px] font-semibold leading-7">{children}</h2>
+      <h2 className="num text-[18px] font-semibold leading-7">{children}</h2>
       {right}
     </div>
   );

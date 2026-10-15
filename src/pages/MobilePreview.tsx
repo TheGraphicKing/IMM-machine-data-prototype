@@ -86,7 +86,7 @@ export function CEOApp() {
                     );
                   })}
                 </div>
-                <div className="overline mt-1">Top leaks now</div>
+                <div className="eyebrow mt-1">Top leaks now</div>
                 {M.leaks.slice(0, 3).map(({ m, v }) => (
                   <div key={m.id} className="flex items-center justify-between rounded-[10px] border border-line/70 p-2.5">
                     <div className="min-w-0">
@@ -96,7 +96,7 @@ export function CEOApp() {
                     <span className="num text-[16px] font-bold text-down-t">{inr(v.value)}</span>
                   </div>
                 ))}
-                <div className="overline mt-1">By organisation</div>
+                <div className="eyebrow mt-1">By organisation</div>
                 {M.byOrg.map(({ o, m, plan }) => (
                   <div key={o.id} className="flex items-center justify-between text-[13px]">
                     <span className="font-semibold">{o.name}</span>
@@ -135,7 +135,7 @@ export function CEOApp() {
                   </div>
                 ))}
                 <div className="rounded-[12px] border border-brand/50 bg-brand/10 p-3 text-[13px]">
-                  <div className="overline !text-brand">One decision for today</div>
+                  <div className="eyebrow !text-brand">One decision for today</div>
                   Approve a ₹1.8 L preventive heater check on all 450 T machines.
                 </div>
               </>
@@ -175,11 +175,11 @@ export function UnitApp() {
                 <div className="num text-[22px] font-bold">{u.name}</div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="rounded-[12px] border border-line/70 p-3">
-                    <div className="overline">Plan</div>
+                    <div className="eyebrow">Plan</div>
                     <div className="num text-[26px] font-bold" style={{ color: planText(D.plan) }}>{pct(D.plan)}</div>
                   </div>
                   <div className="rounded-[12px] border border-line/70 p-3">
-                    <div className="overline">OEE</div>
+                    <div className="eyebrow">OEE</div>
                     <div className="num text-[26px] font-bold">{pct(D.oee)}</div>
                   </div>
                 </div>

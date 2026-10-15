@@ -40,7 +40,7 @@ export default function Machine() {
   const lastStop = [...m.timeline].reverse().find((s) => s.s !== 'RUN' && s.end < w.t - 1);
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 text-[13px] text-fg3">
           <Link to="/home" className="hover:text-fg">Corporate</Link>/<Link to="/rollup" className="hover:text-fg">{org.name}</Link>/<Link to={`/unit/${u.id}`} className="hover:text-fg">{u.name}</Link>/<span className="text-fg2">{m.code}</span>
@@ -66,7 +66,7 @@ export default function Machine() {
           >
             {m.state === 'DOWN' && <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgb(var(--down)/0.14),transparent_60%)]" />}
             <div className="relative">
-              <motion.h1 layoutId={`m-title-${m.id}`} className="num text-[44px] font-bold leading-none">
+              <motion.h1 layoutId={`m-title-${m.id}`} className="num text-[36px] font-bold leading-none">
                 {m.code}
               </motion.h1>
               <div className="mt-1 text-[13px] text-fg3">
@@ -103,14 +103,14 @@ export default function Machine() {
               ['Next job', w.jobs.find((j) => j.machineId === m.id && j.start * 3600 > w.t)?.id ?? 'WO-48162', `${w.jobs.find((j) => j.machineId === m.id && j.start * 3600 > w.t)?.partName ?? 'Air vent'} · at ${clock(Math.round((w.jobs.find((j) => j.machineId === m.id && j.start * 3600 > w.t)?.start ?? 7.5) * 3600))}`],
             ].map(([l, v, s], i) => (
               <motion.div key={l} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04, ease: EASE }} className="glass !rounded-[10px] p-3">
-                <div className="overline">{l}</div>
-                <div className="num mt-1 truncate text-[20px] font-semibold">{v}</div>
+                <div className="eyebrow">{l}</div>
+                <div className="num mt-1 truncate text-[16px] font-semibold">{v}</div>
                 <div className="truncate text-[12px] text-fg3">{s}</div>
               </motion.div>
             ))}
           </div>
         </div>
-        <div className="glass relative h-[300px] overflow-hidden !rounded-[12px] xl:h-auto xl:min-h-[300px]">
+        <div data-tour="machine-3d" className="glass relative h-[300px] overflow-hidden !rounded-[12px] xl:h-auto xl:min-h-[300px]">
           <Suspense fallback={<Loader label="Loading 3D machine" />}>
             <MachineViewer m={m} cycle={k.ct} zone={zone} onZone={(i) => (setZone(i), setTab('process'))} />
           </Suspense>
@@ -199,7 +199,7 @@ function Production({ m, onLog }: { m: M; onLog: () => void }) {
   const params = paramChips(m);
   return (
     <div className="flex flex-col gap-4">
-      <KpiRow m={m} />
+      <div data-tour="machine-kpis"><KpiRow m={m} /></div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Panel title="Cycle time · recent shots" sub={`Standard ${k.std.toFixed(1)} s · alert at +5% (${(k.std * 1.05).toFixed(1)} s)`}>
           {ct.length > 2 ? (
@@ -221,8 +221,8 @@ function Production({ m, onLog }: { m: M; onLog: () => void }) {
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-8">
         {params.map((p) => (
           <div key={p.l} className={cx('glass !rounded-[8px] p-2.5', p.bad && '!border-down/50 !bg-down/10', p.warn && '!border-idle/50 !bg-idle/10')}>
-            <div className="overline !text-[10px]">{p.l}</div>
-            <div className="num text-[20px] font-semibold" style={{ color: p.bad ? 'rgb(var(--down-t))' : p.warn ? 'rgb(var(--idle-t))' : undefined }}>
+            <div className="eyebrow !text-[10px]">{p.l}</div>
+            <div className="num text-[16px] font-semibold" style={{ color: p.bad ? 'rgb(var(--down-t))' : p.warn ? 'rgb(var(--idle-t))' : undefined }}>
               {p.v} <span className="text-[12px] text-fg3">{p.u}</span>
             </div>
             <div className="text-[11px] text-fg3">{p.lim}</div>
@@ -394,7 +394,7 @@ function Process({ m, zone, setZone }: { m: M; zone: number | null; setZone: (z:
                         {r.l} <span className="text-fg3">{r.u}</span>
                       </td>
                       <td className="num !text-right text-fg2">{r.set >= 100 ? fmt(r.set) : fmt1(r.set)}</td>
-                      <td className="num !text-right text-[15px] font-semibold" style={{ color: bad ? 'rgb(var(--down-t))' : near ? 'rgb(var(--idle-t))' : undefined }}>
+                      <td className="num !text-right text-[13.5px] font-semibold" style={{ color: bad ? 'rgb(var(--down-t))' : near ? 'rgb(var(--idle-t))' : undefined }}>
                         {running || r.z !== undefined || r.l.startsWith('Mould') || r.l.startsWith('Cool') ? (r.act >= 100 ? fmt(r.act) : fmt1(r.act)) : '—'}
                       </td>
                       <td>
@@ -425,11 +425,11 @@ function Process({ m, zone, setZone }: { m: M; zone: number | null; setZone: (z:
         <Panel title={`Mould ${md?.id} · ${md?.name}`} sub={`${md?.positions.length} cavities · ${md?.owner === 'customer' ? `customer-owned (${md.customer})` : 'own tool'}`}>
           <div className="flex items-center gap-4">
             <Ring v={((md?.shotsSincePM ?? 0) / (md?.pmInterval ?? 1)) * 100} size={88} stroke={8} color={shotsLeft < 5000 ? 'rgb(var(--idle))' : 'rgb(var(--run))'}>
-              <span className="num text-[18px] font-bold">{Math.round(((md?.shotsSincePM ?? 0) / (md?.pmInterval ?? 1)) * 100)}%</span>
+              <span className="num text-[15px] font-bold">{Math.round(((md?.shotsSincePM ?? 0) / (md?.pmInterval ?? 1)) * 100)}%</span>
             </Ring>
             <div>
-              <div className="overline">Shots since maintenance</div>
-              <div className="num text-[22px] font-semibold">
+              <div className="eyebrow">Shots since maintenance</div>
+              <div className="num text-[18px] font-semibold">
                 {fmt(md?.shotsSincePM ?? 0)} / {fmt(md?.pmInterval ?? 0)}
               </div>
               <div className="text-[12px]" style={{ color: shotsLeft < 5000 ? 'rgb(var(--idle-t))' : 'rgb(var(--fg3))' }}>
@@ -438,15 +438,15 @@ function Process({ m, zone, setZone }: { m: M; zone: number | null; setZone: (z:
             </div>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3 text-[13px]">
-            <div><div className="overline">Part weight std</div><div className="num font-semibold">{fmt1(nominal)} g ± {part?.tol}</div></div>
-            <div><div className="overline">Std cycle</div><div className="num font-semibold">{k.std.toFixed(1)} s</div></div>
-            <div><div className="overline">Lifetime shots</div><div className="num font-semibold">{fmt(md?.lifetime ?? 0)}</div></div>
-            <div><div className="overline">Material</div><div className="num font-semibold">{part?.material} · dried 4 h</div></div>
+            <div><div className="eyebrow">Part weight std</div><div className="num font-semibold">{fmt1(nominal)} g ± {part?.tol}</div></div>
+            <div><div className="eyebrow">Std cycle</div><div className="num font-semibold">{k.std.toFixed(1)} s</div></div>
+            <div><div className="eyebrow">Lifetime shots</div><div className="num font-semibold">{fmt(md?.lifetime ?? 0)}</div></div>
+            <div><div className="eyebrow">Material</div><div className="num font-semibold">{part?.material} · dried 4 h</div></div>
           </div>
         </Panel>
         <Panel title="Energy" sub="This shift">
           <div className="flex items-baseline gap-2">
-            <span className="num text-[30px] font-bold">{fmt(m.kwh)}</span>
+            <span className="num text-[24px] font-bold">{fmt(m.kwh)}</span>
             <span className="text-fg3">kWh</span>
           </div>
           <div className="text-[12px] text-fg3">{(m.kwh / Math.max(1, k.good)).toFixed(3)} kWh / part · now {fmt1(m.kw)} kW</div>
@@ -500,7 +500,7 @@ function Quality({ m }: { m: M }) {
             </div>
           ))}
         </div>
-        <div className="mt-4 overline">Defects</div>
+        <div className="mt-4 eyebrow">Defects</div>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {[...defects.entries()].sort((a, b) => b[1] - a[1]).map(([d, n]) => (
             <span key={d} className="chip !h-7 !cursor-default">{d} · {n}</span>
@@ -547,15 +547,15 @@ function Energy({ m }: { m: M }) {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <Panel title="kWh this shift">
-        <div className="num text-[40px] font-bold">{fmt(m.kwh)}</div>
+        <div className="num text-[32px] font-bold">{fmt(m.kwh)}</div>
         <div className="text-[13px] text-fg3">Idle / stopped energy {fmt(m.kwhIdle)} kWh · ₹{fmt(m.kwhIdle * 8.6)}</div>
       </Panel>
       <Panel title="kWh / good part">
-        <div className="num text-[40px] font-bold">{(m.kwh / Math.max(1, k.good)).toFixed(3)}</div>
+        <div className="num text-[32px] font-bold">{(m.kwh / Math.max(1, k.good)).toFixed(3)}</div>
         <div className="text-[13px] text-fg3">Unit average {(uk / Math.max(1, ug)).toFixed(3)} · rated {m.ratedKw} kW</div>
       </Panel>
       <Panel title="Power now">
-        <div className="num text-[40px] font-bold">{fmt1(m.kw)} <span className="text-[18px] text-fg3">kW</span></div>
+        <div className="num text-[32px] font-bold">{fmt1(m.kw)} <span className="text-[15px] text-fg3">kW</span></div>
         <Sparkline data={[...curve, m.kw]} w={300} h={50} color="rgb(var(--mould))" fill />
       </Panel>
     </div>

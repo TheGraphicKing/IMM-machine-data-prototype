@@ -45,7 +45,7 @@ export default function Twin() {
   if (mobile)
     return (
       <div className="flex flex-col gap-3 p-4">
-        <h1 className="num text-[26px] font-bold">{u.name} · digital twin</h1>
+        <h1 className="num text-[20px] font-bold">{u.name} · digital twin</h1>
         <div className="text-[13px] text-fg3">The 3D floor is built for larger screens. Here is the same live floor as tiles.</div>
         <div className="grid grid-cols-2 gap-2">
           {ms.map((x, i) => (
@@ -56,7 +56,7 @@ export default function Twin() {
     );
 
   return (
-    <div className="relative h-[calc(100vh-56px)] w-full overflow-hidden">
+    <div data-tour="twin" className="relative h-[calc(100vh-56px)] w-full overflow-hidden">
       <Stage className="absolute inset-0" camera={{ position: [34, 44, 58], fov: 36, near: 0.5, far: 400 }} hero>
         <Factory w={w} ms={ms} opts={opts} selected={sel} onSelect={setSel} hover={hover} setHover={setHover} />
       </Stage>
@@ -68,7 +68,7 @@ export default function Twin() {
             <LiveDot label="Digital twin · live" />
             <span>· {w.org[u.orgId].name}</span>
           </div>
-          <div className="num text-[26px] font-bold leading-8">{u.name}</div>
+          <div className="num text-[20px] font-bold leading-8">{u.name}</div>
           <div className="mt-1 flex gap-4 text-[13px]">
             <span>Plan <b className="num" style={{ color: planText(D.plan) }}>{pct(D.plan)}</b></span>
             <span>OEE <b className="num">{pct(D.oee)}</b></span>
@@ -136,7 +136,7 @@ function MachinePanel({ id, onClose }: { id: string; onClose: () => void }) {
     <>
       <div className="flex items-start justify-between">
         <div>
-          <div className="num text-[32px] font-bold leading-9">{m.code}</div>
+          <div className="num text-[26px] font-bold leading-9">{m.code}</div>
           <div className="text-[12px] text-fg3">{m.make} {m.tonnage} T · {m.hall}</div>
         </div>
         <button className="btn btn-ghost !h-8 !w-8 !p-0" onClick={onClose} aria-label="Close"><X size={15} /></button>
@@ -145,10 +145,10 @@ function MachinePanel({ id, onClose }: { id: string; onClose: () => void }) {
       {m.state !== 'RUN' && <div className="text-[13px] text-fg2">{m.reasonLogged ? m.reason : 'No reason logged'}</div>}
       {tk && tk.stage !== 'closed' && <StageBadge stage={tk.stage} team={tk.team} />}
       <div className="grid grid-cols-2 gap-2 text-[12px]">
-        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="overline">Parts</div><div className="num text-[20px] font-bold">{fmt(k.good)}</div><div style={{ color: planText(p) }}>{p.toFixed(0)}% of target</div></div>
-        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="overline">Cycle</div><div className="num text-[20px] font-bold" style={{ color: m.cycleFactor > 1.05 ? 'rgb(var(--down-t))' : undefined }}>{k.ct.toFixed(1)} s</div><div className="text-fg3">std {k.std.toFixed(1)} s</div></div>
-        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="overline">OEE</div><div className="num text-[20px] font-bold">{k.oee.toFixed(1)}%</div><div className="text-fg3">A {k.A.toFixed(0)} · P {k.P.toFixed(0)} · Q {k.Q.toFixed(0)}</div></div>
-        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="overline">Reject</div><div className="num text-[20px] font-bold" style={{ color: k.rej > 3 ? 'rgb(var(--down-t))' : undefined }}>{k.rej.toFixed(1)}%</div><div className="text-fg3">{fmt(m.bad)} parts</div></div>
+        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="eyebrow">Parts</div><div className="num text-[16px] font-bold">{fmt(k.good)}</div><div style={{ color: planText(p) }}>{p.toFixed(0)}% of target</div></div>
+        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="eyebrow">Cycle</div><div className="num text-[16px] font-bold" style={{ color: m.cycleFactor > 1.05 ? 'rgb(var(--down-t))' : undefined }}>{k.ct.toFixed(1)} s</div><div className="text-fg3">std {k.std.toFixed(1)} s</div></div>
+        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="eyebrow">OEE</div><div className="num text-[16px] font-bold">{k.oee.toFixed(1)}%</div><div className="text-fg3">A {k.A.toFixed(0)} · P {k.P.toFixed(0)} · Q {k.Q.toFixed(0)}</div></div>
+        <div className="rounded-[8px] bg-panel2/70 p-2.5"><div className="eyebrow">Reject</div><div className="num text-[16px] font-bold" style={{ color: k.rej > 3 ? 'rgb(var(--down-t))' : undefined }}>{k.rej.toFixed(1)}%</div><div className="text-fg3">{fmt(m.bad)} parts</div></div>
       </div>
       <div className="text-[12px] text-fg2">
         <b>{m.wo}</b> · {w.part[md.positions[0].partId]?.name} · {md.id} ({md.positions.length} cav) · {m.operator}
