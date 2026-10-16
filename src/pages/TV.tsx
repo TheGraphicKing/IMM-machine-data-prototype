@@ -137,6 +137,7 @@ export default function TV() {
       {/* controls (not part of the TV canvas) */}
       <div className="fixed right-3 top-3 z-10 flex gap-2 opacity-30 transition hover:opacity-100">
         <button className="btn btn-ghost !h-8 !bg-black/50 !text-white" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Play' : 'Pause'}>{paused ? <Play size={14} /> : <Pause size={14} />}</button>
+        <button className="btn btn-ghost !h-8 !bg-[#F26A21] !text-[#15171A]" onClick={() => nav(`/tv-ui?u=${unitId}`)} title="Shopfloor TV for United Industries">UI version</button>
         <button className="btn btn-ghost !h-8 !bg-black/50 !text-white" onClick={() => setLight((l) => !l)}>{light ? 'Dark' : 'Light'}</button>
         <button className="btn btn-ghost !h-8 !bg-black/50 !text-white" onClick={() => (useSim.getState().entered ? nav(-1) : nav('/home'))} aria-label="Exit TV"><X size={14} />Exit</button>
       </div>

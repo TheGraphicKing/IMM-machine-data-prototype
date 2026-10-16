@@ -26,6 +26,7 @@ const Intro = lazy(() => import('./pages/Intro'));
 const Rollup = lazy(() => import('./pages/Rollup'));
 const Twin = lazy(() => import('./pages/Twin'));
 const TV = lazy(() => import('./pages/TV'));
+const TVUI = lazy(() => import('./pages/TVUI'));
 
 function Gate({ mod, children }: { mod: ModuleId; children: ReactNode }) {
   const on = useSim((s) => s.modules[mod]);
@@ -80,6 +81,7 @@ export default function App() {
       ) : (
         <Routes>
           <Route path="/tv" element={<Gate mod="tv"><TV /></Gate>} />
+          <Route path="/tv-ui" element={<Gate mod="tv"><TVUI /></Gate>} />
           <Route element={<Shell />}>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Home />} />

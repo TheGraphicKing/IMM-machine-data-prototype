@@ -131,6 +131,12 @@ export default function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; 
         >
           {collapsed ? <MonitorPlay size={17} /> : (<><span className="flex items-center gap-2"><MonitorPlay size={16} />Shopfloor TV mode</span><span>↗</span></>)}
         </Link>
+        {!collapsed && (
+          <Link to={modules.tv ? '/tv-ui' : '/locked/tv'} className="-mt-1 flex h-8 items-center justify-between rounded-md px-3 text-[12px] text-fg3 transition hover:bg-panel3 hover:text-fg" title="Shopfloor TV for United Industries (UI design)">
+            <span className="flex items-center gap-2"><span className="grid h-4 w-6 place-items-center rounded-[4px] bg-[#F26A21] text-[9px] font-bold text-[#15171A]">UI</span>Shopfloor TV for UI</span>
+            <span>↗</span>
+          </Link>
+        )}
         <div className={cx('flex items-center gap-2.5 px-1', collapsed && 'justify-center')}>
           <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-panel3 text-[12px] font-semibold text-fg">{r.ini}</div>
           {!collapsed && (

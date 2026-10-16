@@ -45,6 +45,7 @@ Stack: Vite + React 18 + TypeScript (strict) + Tailwind, three.js via @react-thr
 | `/mobile` | Four live phone frames (CEO, plant head, supervisor, technician) |
 | `/modules` | Modular SaaS: plans + per-module toggles that update the sidebar live; locked modules show an “Unlock” state |
 | `/tv` | Shopfloor TV, 1920×1080 scaled, auto-rotating playlist (timeline 1–3, reasons, availability, trucks, production); `?m=<machine>` adds the red single-machine DOWN screen |
+| `/tv-ui` | **Shopfloor TV for UI (United Industries)** — the UI “Shopfloor TV v3” design system: Barlow / Barlow Condensed, UI logo, dark header, sized for a 65″ screen at 5–10 m (key numbers ≥ 60 px, labels ≥ 24 px, colour never the only signal). Rotation ≈ 3 min: Timeline 1–3 → OEE summary (this hour + month, A/P/Q, energy kWh/kg, last 12 h, top 3 losses) → Hourly OEE by machine 1–3 (hatched stop hours in the team colour, M/C tags) → Machines worst first (OEE + A/P/Q loss bar) → Reasons → Availability → Trucks (waiting to load → at dock → waiting to unload → left). Truck band on every page. Light/dark, OEE target and truck limits in the settings (gear, top right); landscape 1920×1080 or portrait 1080×1920 (auto, or O). Live from the simulator. Open from the sidebar (“Shopfloor TV for UI”) or the “UI version” button on `/tv` |
 
 ## Demo controls cheat sheet
 
