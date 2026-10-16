@@ -141,13 +141,17 @@ export default function TVUI() {
   const name = u.name.toUpperCase();
   const ctx: Ctx = { w, ms, th, T, amber, red, tk, portrait, unitId, name, sh };
 
-  const groupLabel = (k: Kind) => {
-    const idx = pages.filter((p) => p.kind === k).indexOf(pg);
-    return idx;
-  };
   const head = headFor(pg, ctx, nPages);
-  const pills = PILL.map((p) => ({ l: p.l, on: p.kind === pg.kind }));
-  const circles = pg.kind === 'hourly' || pg.kind === 'timeline' ? Array.from({ length: nPages }, (_, k) => ({ l: String(k + 1), on: k === groupLabel(pg.kind) })) : null;
+  // clickable page tabs in rotation order; multi-page groups carry their 1 · 2 · 3 inside the tab
+  const navItems: NavItem[] = PILL.map((p) => {
+    const idxs = pages.map((x, k) => (x.kind === p.kind ? k : -1)).filter((k) => k >= 0);
+    return {
+      l: p.l,
+      on: p.kind === pg.kind,
+      go: () => go(idxs[0]),
+      pages: idxs.length > 1 ? idxs.map((k, n) => ({ l: String(n + 1), on: k === i % pages.length, go: () => go(k) })) : undefined,
+    };
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ background: dark ? '#000' : '#E9E7E1' }}>
@@ -155,7 +159,12 @@ export default function TVUI() {
         data-tour="tv"
         style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: 'center', background: th.bg, color: th.tx, display: 'flex', flexDirection: 'column', fontFamily: BAR, position: 'relative', overflow: 'hidden', flex: 'none' }}
       >
-        <Header th={th} portrait={portrait} title={head.title} sub={head.sub} pills={circles ? null : pills} circles={circles} clock={hhmm(w.t)} />
+        <Header th={th} portrait={portrait} title={head.title} sub={head.sub} nav={portrait ? null : <PageNav items={navItems} />} clock={hhmm(w.t)} />
+        {portrait && (
+          <div style={{ flex: 'none', background: th.hd, padding: '0 30px 14px', display: 'flex', justifyContent: 'center' }}>
+            <PageNav items={navItems} portrait />
+          </div>
+        )}
         {/* rotation progress, thin, under the header */}
         <div style={{ height: 6, flex: 'none', background: th.hd }}>
           <div style={{ height: '100%', width: `${(elapsed / pg.secs) * 100}%`, background: ORANGE, transition: 'width 0.1s linear' }} />
@@ -177,7 +186,7 @@ export default function TVUI() {
       </div>
 
       {/* presenter controls — outside the TV canvas, fade in on hover */}
-      <div className="fixed right-3 top-3 z-10 flex items-center gap-1.5 opacity-25 transition hover:opacity-100">
+      <div className="fixed bottom-3 left-3 z-10 flex items-center gap-1.5 opacity-30 transition hover:opacity-100">
         <Ctl onClick={() => nav('/tv')} label="Standard TV">
           <ArrowLeft size={14} /> <span className="text-[12px]">Standard TV</span>
         </Ctl>
@@ -192,7 +201,7 @@ export default function TVUI() {
         </Ctl>
       </div>
       {panel && (
-        <div className="fixed right-3 top-14 z-10 flex w-[280px] flex-col gap-3 rounded-[14px] bg-[#15171A]/95 p-4 text-[12px] text-white shadow-2xl" style={{ fontFamily: BAR }}>
+        <div className="fixed bottom-14 left-3 z-10 flex w-[280px] flex-col gap-3 rounded-[14px] bg-[#15171A]/95 p-4 text-[12px] text-white shadow-2xl" style={{ fontFamily: BAR }}>
           <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#9AA0A8]">Shopfloor TV · UI</div>
           <Row l="Theme">
             <Seg opts={['Light', 'Dark']} v={dark ? 'Dark' : 'Light'} on={(v) => setDark(v === 'Dark')} />
@@ -271,35 +280,60 @@ function headFor(pg: Pg, c: Ctx, nPages: number) {
 
 const f = (weight: number, size: number, family: string, lh?: number | string): CSSProperties => ({ fontWeight: weight, fontSize: size, fontFamily: family, lineHeight: lh ?? 'normal' });
 
-function Header({ th, portrait, title, sub, pills, circles, clock }: { th: Theme; portrait: boolean; title: string; sub: ReactNode; pills: { l: string; on: boolean }[] | null; circles: { l: string; on: boolean }[] | null; clock: string }) {
+interface NavItem {
+  l: string;
+  on: boolean;
+  go: () => void;
+  pages?: { l: string; on: boolean; go: () => void }[];
+}
+
+/** Page tabs (UI v3 header pills), clickable. The active multi-page tab shows its pages as circles. */
+function PageNav({ items, portrait }: { items: NavItem[]; portrait?: boolean }) {
+  const fs = portrait ? 20 : 18;
   return (
-    <header style={{ height: portrait ? 130 : 104, flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: portrait ? '0 30px' : '0 36px', background: th.hd, color: '#fff', borderBottom: '2px solid #1E2227', gap: 20 }}>
+    <nav style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', justifyContent: portrait ? 'center' : undefined }} aria-label="TV pages">
+      {items.map((p) => (
+        <div key={p.l} style={{ display: 'flex', alignItems: 'center', gap: 4, borderRadius: 7, background: p.on ? ORANGE : '#1E2227', padding: p.on && p.pages ? '3px 4px 3px 0' : 0 }}>
+          <button
+            type="button"
+            onClick={p.go}
+            aria-current={p.on ? 'page' : undefined}
+            style={{ ...f(700, fs, BAR), padding: portrait ? '8px 12px' : '7px 11px', borderRadius: 6, border: 0, cursor: 'pointer', background: 'transparent', color: p.on ? '#15171A' : '#9AA0A8' }}
+            onMouseEnter={(e) => !p.on && (e.currentTarget.style.color = '#FFFFFF')}
+            onMouseLeave={(e) => !p.on && (e.currentTarget.style.color = '#9AA0A8')}
+          >
+            {p.l}
+          </button>
+          {p.on &&
+            p.pages?.map((n) => (
+              <button
+                key={n.l}
+                type="button"
+                onClick={n.go}
+                aria-label={`${p.l} page ${n.l}`}
+                style={{ width: 34, height: 34, borderRadius: '50%', display: 'grid', placeItems: 'center', border: `2px solid ${n.on ? '#15171A' : 'rgba(21,23,26,.35)'}`, background: n.on ? '#15171A' : 'transparent', color: n.on ? ORANGE : '#15171A', cursor: 'pointer', ...f(700, 22, COND, 1) }}
+              >
+                {n.l}
+              </button>
+            ))}
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+function Header({ th, portrait, title, sub, nav, clock }: { th: Theme; portrait: boolean; title: string; sub: ReactNode; nav: ReactNode; clock: string }) {
+  return (
+    <header style={{ height: portrait ? 130 : 104, flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: portrait ? '0 30px' : '0 36px', background: th.hd, color: '#fff', borderBottom: portrait ? 'none' : '2px solid #1E2227', gap: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: portrait ? 16 : 20, minWidth: 0 }}>
         <img src={logo} alt="United Industries" style={{ height: portrait ? 56 : 54, width: 'auto', flex: 'none' }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
           <span style={{ ...f(700, 46, COND, 1), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</span>
-          <span style={{ ...f(500, 24, BAR), color: '#9AA0A8', whiteSpace: 'nowrap' }}>{sub}</span>
+          <span style={{ ...f(500, 24, BAR), color: '#9AA0A8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sub}</span>
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: portrait ? 16 : 22, flex: 'none' }}>
-        {pills && !portrait && (
-          <div style={{ display: 'flex', gap: 6 }}>
-            {pills.map((p) => (
-              <span key={p.l} style={{ ...f(700, 18, BAR), padding: '6px 10px', borderRadius: 5, background: p.on ? ORANGE : '#1E2227', color: p.on ? '#15171A' : '#9AA0A8' }}>
-                {p.l}
-              </span>
-            ))}
-          </div>
-        )}
-        {circles && (
-          <div style={{ display: 'flex', gap: portrait ? 6 : 8 }}>
-            {circles.map((p) => (
-              <span key={p.l} style={{ width: portrait ? 46 : 52, height: portrait ? 46 : 52, borderRadius: '50%', display: 'grid', placeItems: 'center', ...f(700, portrait ? 26 : 30, COND), background: p.on ? ORANGE : 'transparent', color: p.on ? '#15171A' : '#C9CDD3', border: `3px solid ${p.on ? ORANGE : '#4A4F57'}` }}>
-                {p.l}
-              </span>
-            ))}
-          </div>
-        )}
+        {nav}
         <span style={f(700, portrait ? 84 : 80, COND, 1)}>{clock}</span>
       </div>
     </header>
